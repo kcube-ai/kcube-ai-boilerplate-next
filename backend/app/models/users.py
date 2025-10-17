@@ -2,13 +2,9 @@ from typing import Optional
 import datetime
 import uuid
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Text, UniqueConstraint, Uuid, text
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy import CheckConstraint, DateTime, Index, PrimaryKeyConstraint, String, UniqueConstraint, Uuid, text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models import Base
 
 
 class Users(Base):
@@ -39,6 +35,6 @@ class Users(Base):
 
     conversations: Mapped[list['Conversations']] = relationship(
         'Conversations', back_populates='user')
-    oauth: Mapped[list['Oauth']] = relationship('Oauth', back_populates='user')
+    oauth: Mapped[list['OAuth']] = relationship('OAuth', back_populates='user')
     subscriptions: Mapped[list['Subscriptions']] = relationship(
         'Subscriptions', back_populates='user')
