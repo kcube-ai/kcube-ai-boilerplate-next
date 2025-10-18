@@ -19,6 +19,7 @@ const guestRoutes = [
   "/signup",
   "/forgot-password",
   "/verify-forgot-password",
+  "/google-oauth-redirect",
 ];
 const authenticatedRoutes = [
   "/verify-signup",

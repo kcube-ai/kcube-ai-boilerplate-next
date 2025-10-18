@@ -4,6 +4,7 @@ Provides signup, login, verification, and profile management endpoints.
 """
 
 from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, field_validator
 
@@ -22,6 +23,7 @@ from backend.core.validation import (
 )
 from backend.models import UserPublic
 from backend.modules.two_fa.two_fa import two_fa_service
+from backend.services.google_oauth import google_oauth_service
 
 from .background import send_verification_email_task, send_welcome_email_task
 from .exceptions import (
@@ -128,6 +130,12 @@ class UpdateProfilePictureRequest(BaseModel):
         if not is_valid_profile_picture(v):
             raise InvalidProfilePicture()
         return v
+
+
+class GoogleAuthCallbackRequest(BaseModel):
+    """Request model for Google OAuth callback."""
+
+    code: str
 
 
 # Response models
@@ -341,3 +349,56 @@ def remove_profile_picture(
     session.commit()
 
     return user_to_public(user)
+
+
+@router.get("/google-auth")
+async def google_auth():
+    """Initiate Google OAuth flow by redirecting to Google consent screen."""
+    # Get authorization URL from Google
+    auth_url = google_oauth_service.get_authorization_url()
+
+    # Redirect to Google OAuth consent screen
+    return RedirectResponse(auth_url)
+
+
+@router.post("/google-auth/callback", response_model=Auth)
+async def google_auth_callback(
+    data: GoogleAuthCallbackRequest,
+    session: SessionDep,
+    background_tasks: BackgroundTasks,
+):
+    """Handle Google OAuth callback with authorization code."""
+    # Exchange code for user info
+    user_info = await google_oauth_service.get_user_info(data.code)
+
+    # Continue for existing user, create new user otherwise
+    user = user_service.get_by_email(session, user_info.email)
+    if not user:
+        # Create new OAuth user
+        user = user_service.create_oauth(
+            session,
+            email=user_info.email,
+            full_name=user_info.full_name,
+            auth_provider="google",
+        )
+
+        # Create 2FA settings for user
+        two_fa_service.create(session, user.id)
+
+        # Send welcome email in background
+        background_tasks.add_task(
+            send_welcome_email_task,
+            email=user.email,
+            name=user.full_name,
+        )
+
+    # Generate JWT token
+    access_token = create_access_token(user.id)
+
+    # Commit
+    session.commit()
+
+    return Auth(
+        access_token=access_token,
+        user=user_to_public(user),
+    )

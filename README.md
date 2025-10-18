@@ -4,8 +4,8 @@ Modern full-stack web application with FastAPI backend and Next.js 15 frontend.
 
 ## Features
 
-- **Authentication** - JWT tokens, 2FA (TOTP), email verification
-- **User Management** - Profile, password management, OAuth-ready
+- **Authentication** - JWT tokens, 2FA (TOTP), email verification, Google OAuth
+- **User Management** - Profile, password management, social login
 - **Security** - Rate limiting (Redis), password hashing (bcrypt)
 - **Modern Stack** - FastAPI, Next.js 15, React 19, TypeScript, PostgreSQL
 - **Developer Experience** - Auto-generated API client, hot reload, type safety
@@ -156,6 +156,11 @@ POSTGRES_DB=sample_db
 POSTGRES_PASSWORD=your-password
 REDIS_URL=redis://localhost:6379/0
 SENDGRID_API_KEY=your-api-key
+
+# Google OAuth (optional)
+GOOGLE_OAUTH_CLIENT_ID=your-client-id
+GOOGLE_OAUTH_CLIENT_SECRET=your-client-secret
+GOOGLE_OAUTH_REDIRECT_URI=http://localhost:8000/google-oauth-redirect
 ```
 
 See `.env.example` for complete list.
