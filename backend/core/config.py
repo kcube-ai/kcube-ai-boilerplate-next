@@ -73,6 +73,7 @@ class Settings(BaseModel):
     # Google OAuth
     GOOGLE_OAUTH_CLIENT_ID: str = get_env("GOOGLE_OAUTH_CLIENT_ID")
     GOOGLE_OAUTH_CLIENT_SECRET: str = get_env("GOOGLE_OAUTH_CLIENT_SECRET")
+    GOOGLE_OAUTH_REDIRECT_URI: str = get_env("GOOGLE_OAUTH_REDIRECT_URI")
 
     @computed_field
     @property
