@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CreateApiV1BookDemoPostData, CreateApiV1BookDemoPostResponse, ServeIconIconPngGetResponse, ServeAppleIconAppleIconPngGetResponse, ServeFaviconIcoFaviconIcoGetResponse, ServeLogoPngLogoPngGetResponse, ServeLogoSvgLogoSvgGetResponse, ServeVideoVideoFilePathGetData, ServeVideoVideoFilePathGetResponse, ServeImagesImagesFilePathGetData, ServeImagesImagesFilePathGetResponse, ServeFrontendPathGetData, ServeFrontendPathGetResponse, RequestApiV1ForgotPasswordPostData, RequestApiV1ForgotPasswordPostResponse, VerifyApiV1ForgotPasswordVerifyPostData, VerifyApiV1ForgotPasswordVerifyPostResponse, CheckApiV1HealthGetResponse, SetupApiV1TwoFaSetupGetResponse, VerifyApiV1TwoFaVerifyPostData, VerifyApiV1TwoFaVerifyPostResponse, VerifyCodeApiV1TwoFaVerifyCodePostData, VerifyCodeApiV1TwoFaVerifyCodePostResponse, DisableApiV1TwoFaDisablePostResponse, SignupApiV1UserSignupPostData, SignupApiV1UserSignupPostResponse, ResendVerificationApiV1UserResendVerificationPostResponse, VerifySignupApiV1UserVerifySignupPostData, VerifySignupApiV1UserVerifySignupPostResponse, LoginApiV1UserLoginPostData, LoginApiV1UserLoginPostResponse, GetMeApiV1UserMeGetResponse, UpdateApiV1UserPutData, UpdateApiV1UserPutResponse, DeleteApiV1UserDeleteResponse, ChangePasswordApiV1UserChangePasswordPostData, ChangePasswordApiV1UserChangePasswordPostResponse, UpdateProfilePictureApiV1UserProfilePicturePostData, UpdateProfilePictureApiV1UserProfilePicturePostResponse, RemoveProfilePictureApiV1UserProfilePictureDeleteResponse } from './types.gen';
+import type { CreateApiV1BookDemoPostData, CreateApiV1BookDemoPostResponse, ServeIconIconPngGetResponse, ServeAppleIconAppleIconPngGetResponse, ServeFaviconIcoFaviconIcoGetResponse, ServeLogoPngLogoPngGetResponse, ServeLogoSvgLogoSvgGetResponse, ServeVideoVideoFilePathGetData, ServeVideoVideoFilePathGetResponse, ServeImagesImagesFilePathGetData, ServeImagesImagesFilePathGetResponse, ServeFrontendPathGetData, ServeFrontendPathGetResponse, RequestApiV1ForgotPasswordPostData, RequestApiV1ForgotPasswordPostResponse, VerifyApiV1ForgotPasswordVerifyPostData, VerifyApiV1ForgotPasswordVerifyPostResponse, CheckApiV1HealthGetResponse, SetupApiV1TwoFaSetupGetResponse, VerifyApiV1TwoFaVerifyPostData, VerifyApiV1TwoFaVerifyPostResponse, VerifyCodeApiV1TwoFaVerifyCodePostData, VerifyCodeApiV1TwoFaVerifyCodePostResponse, DisableApiV1TwoFaDisablePostResponse, SignupApiV1UserSignupPostData, SignupApiV1UserSignupPostResponse, ResendVerificationApiV1UserResendVerificationPostResponse, VerifySignupApiV1UserVerifySignupPostData, VerifySignupApiV1UserVerifySignupPostResponse, LoginApiV1UserLoginPostData, LoginApiV1UserLoginPostResponse, GetMeApiV1UserMeGetResponse, UpdateApiV1UserPutData, UpdateApiV1UserPutResponse, DeleteApiV1UserDeleteResponse, ChangePasswordApiV1UserChangePasswordPostData, ChangePasswordApiV1UserChangePasswordPostResponse, UpdateProfilePictureApiV1UserProfilePicturePostData, UpdateProfilePictureApiV1UserProfilePicturePostResponse, RemoveProfilePictureApiV1UserProfilePictureDeleteResponse, GoogleAuthApiV1UserGoogleAuthGetResponse, GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostData, GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostResponse } from './types.gen';
 
 export class BookDemoService {
     /**
@@ -457,6 +457,39 @@ export class UsersService {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/v1/user/profile-picture'
+        });
+    }
+    
+    /**
+     * Google Auth
+     * Initiate Google OAuth flow by redirecting to Google consent screen.
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static googleAuthApiV1UserGoogleAuthGet(): CancelablePromise<GoogleAuthApiV1UserGoogleAuthGetResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/user/google-auth'
+        });
+    }
+    
+    /**
+     * Google Auth Callback
+     * Handle Google OAuth callback with authorization code.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns Auth Successful Response
+     * @throws ApiError
+     */
+    public static googleAuthCallbackApiV1UserGoogleAuthCallbackPost(data: GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostData): CancelablePromise<GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/user/google-auth/callback',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
         });
     }
     

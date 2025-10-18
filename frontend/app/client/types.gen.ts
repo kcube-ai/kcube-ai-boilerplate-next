@@ -33,6 +33,13 @@ export type ForgotPasswordVerifyRequest = {
     new_password: string;
 };
 
+/**
+ * Request model for Google OAuth callback.
+ */
+export type GoogleAuthCallbackRequest = {
+    code: string;
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -205,3 +212,11 @@ export type UpdateProfilePictureApiV1UserProfilePicturePostData = {
 export type UpdateProfilePictureApiV1UserProfilePicturePostResponse = (UserPublic);
 
 export type RemoveProfilePictureApiV1UserProfilePictureDeleteResponse = (UserPublic);
+
+export type GoogleAuthApiV1UserGoogleAuthGetResponse = (unknown);
+
+export type GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostData = {
+    requestBody: GoogleAuthCallbackRequest;
+};
+
+export type GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostResponse = (Auth);
