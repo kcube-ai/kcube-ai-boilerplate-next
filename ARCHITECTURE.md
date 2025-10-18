@@ -10,9 +10,10 @@ This document provides comprehensive architectural guidelines for the Sample bac
 4. [Session Management](#session-management)
 5. [Naming Conventions](#naming-conventions)
 6. [Module System](#module-system)
-7. [Rate Limiting](#rate-limiting)
-8. [Authentication & Authorization](#authentication--authorization)
-9. [Quick Reference Checklist](#quick-reference-checklist)
+7. [Shared Services](#shared-services)
+8. [Rate Limiting](#rate-limiting)
+9. [Authentication & Authorization](#authentication--authorization)
+10. [Quick Reference Checklist](#quick-reference-checklist)
 
 ---
 
@@ -1092,6 +1093,159 @@ backend/modules/user/
 ├── email.py            # Email template rendering
 └── lib.py              # Utility functions
 ```
+
+### Shared Services
+
+For functionality used across multiple modules, create shared services in `backend/services/`:
+
+```
+backend/services/
+├── __init__.py
+└── google_oauth.py     # Google OAuth service
+```
+
+**Pattern** (from `backend/services/google_oauth.py`):
+
+```python
+from urllib.parse import urlencode
+
+import httpx
+from pydantic import BaseModel
+
+from backend.core.config import settings
+
+
+class GoogleUserInfo(BaseModel):
+    """Google OAuth user information."""
+
+    email: str
+    full_name: str
+    avatar_url: str | None = None
+
+
+class GoogleOAuthService:
+    """Service for Google OAuth operations."""
+
+    def __init__(self):
+        """Initialize with OAuth credentials from settings."""
+        self.client_id = settings.GOOGLE_OAUTH_CLIENT_ID
+        self.client_secret = settings.GOOGLE_OAUTH_CLIENT_SECRET
+        self.redirect_uri = settings.GOOGLE_OAUTH_REDIRECT_URI
+        self.auth_url = "https://accounts.google.com/o/oauth2/v2/auth"
+        self.token_url = "https://oauth2.googleapis.com/token"
+        self.userinfo_url = "https://www.googleapis.com/oauth2/v3/userinfo"
+        self.scopes = "openid email profile"
+
+    def get_authorization_url(self) -> str:
+        """Get Google OAuth authorization URL."""
+        params = {
+            "client_id": self.client_id,
+            "redirect_uri": self.redirect_uri,
+            "response_type": "code",
+            "scope": self.scopes,
+            "access_type": "offline",
+            "prompt": "consent",
+        }
+        return f"{self.auth_url}?{urlencode(params)}"
+
+    async def get_user_info(self, code: str) -> GoogleUserInfo:
+        """Exchange authorization code for user info."""
+        async with httpx.AsyncClient() as client:
+            # Exchange code for access token
+            token_response = await client.post(
+                self.token_url,
+                data={
+                    "code": code,
+                    "client_id": self.client_id,
+                    "client_secret": self.client_secret,
+                    "redirect_uri": self.redirect_uri,
+                    "grant_type": "authorization_code",
+                },
+            )
+            token_response.raise_for_status()
+            tokens = token_response.json()
+
+            access_token = tokens.get("access_token")
+            if not access_token:
+                raise ValueError("Failed to retrieve access token from Google")
+
+            # Fetch user info using access token
+            userinfo_response = await client.get(
+                self.userinfo_url,
+                headers={"Authorization": f"Bearer {access_token}"},
+            )
+            userinfo_response.raise_for_status()
+            user_info = userinfo_response.json()
+
+            # Extract and validate user data
+            email = user_info.get("email")
+            avatar_url = user_info.get("picture")
+            full_name = user_info.get("name", email.split("@")[0])
+            if not email or not full_name:
+                raise ValueError("Failed to retrieve user information from Google")
+
+            return GoogleUserInfo(
+                email=email,
+                full_name=full_name,
+                avatar_url=avatar_url,
+            )
+
+
+# Global instance
+google_oauth_service = GoogleOAuthService()
+```
+
+**Usage in Module** (`backend/modules/user/api.py`):
+
+```python
+from fastapi.responses import RedirectResponse
+from backend.services.google_oauth import google_oauth_service
+
+@router.get("/google-auth")
+async def google_auth():
+    """Initiate Google OAuth flow."""
+    auth_url = google_oauth_service.get_authorization_url()
+    return RedirectResponse(auth_url)
+
+@router.post("/google-auth/callback", response_model=Auth)
+async def google_auth_callback(
+    data: GoogleAuthCallbackRequest,
+    session: SessionDep,
+    background_tasks: BackgroundTasks,
+):
+    """Handle Google OAuth callback."""
+    # Get user info from Google
+    user_info = await google_oauth_service.get_user_info(data.code)
+
+    # Check if user exists, create if not
+    user = user_service.get_by_email(session, user_info.email)
+    if not user:
+        user = user_service.create_oauth(
+            session,
+            email=user_info.email,
+            full_name=user_info.full_name,
+            auth_provider="google",
+        )
+        # Send welcome email
+        background_tasks.add_task(send_welcome_email_task, ...)
+
+    # Generate JWT token
+    access_token = create_access_token(user.id)
+
+    # Commit
+    session.commit()
+
+    return Auth(access_token=access_token, user=user_to_public(user))
+```
+
+**Key Points:**
+
+- Shared services don't interact with database directly
+- Return typed models (Pydantic) for clear contracts
+- Configuration from `settings` (environment variables)
+- Async methods for external API calls
+- Raise `ValueError` for errors (or create custom exceptions)
+- Global singleton instance pattern
 
 ---
 

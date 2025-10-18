@@ -152,6 +152,8 @@ sample-next-fast-api/
 │   │   └── validation.py       # Input validation utilities
 │   ├── api/
 │   │   └── deps.py             # Dependency injection (SessionDep, CurrentUserDep, etc)
+│   ├── services/               # Shared services (OAuth, external APIs)
+│   │   └── google_oauth.py     # Google OAuth service
 │   ├── models.py               # SQLModel database tables
 │   ├── modules/                # Feature modules
 │   │   ├── registry.py         # Module registration system
@@ -178,6 +180,7 @@ sample-next-fast-api/
 │   │   ├── login/              # Login page
 │   │   ├── signup/             # Signup page
 │   │   ├── verify-signup/      # Email verification page
+│   │   ├── google-oauth-redirect/  # Google OAuth callback page
 │   │   ├── dashboard/          # Dashboard page (auth required)
 │   │   └── settings/           # Settings page (auth required)
 │   ├── components/             # React components
@@ -656,7 +659,20 @@ POSTGRES_PASSWORD=your-password
 
 # Redis (required for rate limiting)
 REDIS_URL=redis://localhost:6379/0
+
+# Google OAuth (optional, for social login)
+GOOGLE_OAUTH_CLIENT_ID=your-client-id
+GOOGLE_OAUTH_CLIENT_SECRET=your-client-secret
+GOOGLE_OAUTH_REDIRECT_URI=http://localhost:8000/google-oauth-redirect
 ```
+
+**Google OAuth Setup** (optional):
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a project or select existing
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials (Web application)
+5. Add authorized redirect URI: `http://localhost:8000/google-oauth-redirect`
+6. Copy Client ID and Client Secret to `.env`
 
 ---
 
@@ -845,6 +861,7 @@ Black 25.9.0 (code formatting)
 isort 6.0.1 (import sorting)
 Jinja2 3.1.6 (email templates)
 pyotp 2.9.0 (2FA TOTP)
+httpx 0.28.1 (async HTTP client for OAuth)
 ```
 
 ### Frontend (`package.json`)
