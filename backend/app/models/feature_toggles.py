@@ -1,14 +1,7 @@
-from typing import Optional
-import datetime
-import uuid
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Text, UniqueConstraint, Uuid, text
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy import Boolean, CheckConstraint, Index, PrimaryKeyConstraint, String, Text, text
+from sqlalchemy.orm import Mapped, mapped_column
+from app.models import Base
 
 
 class FeatureToggles(Base):

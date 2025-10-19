@@ -2,14 +2,9 @@ from typing import Optional
 import datetime
 import uuid
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Text, UniqueConstraint, Uuid, text
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-
-class Base(DeclarativeBase):
-    pass
-
+from sqlalchemy import CheckConstraint, DateTime, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Text, Uuid, text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models import Base
 
 class ChatMessages(Base):
     __tablename__ = 'chat_messages'
