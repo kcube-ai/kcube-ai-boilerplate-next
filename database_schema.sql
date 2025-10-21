@@ -96,3 +96,42 @@ CREATE TABLE feature_toggles (
 
 CREATE INDEX idx_feature_toggles_plan ON feature_toggles (plan);
 CREATE INDEX idx_feature_toggles_feature_key ON feature_toggles (feature_key);
+
+--------------
+-- Triggers---
+--------------
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Attaching trigger on all applicable tables
+-- users
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+-- subscriptions
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON subscriptions
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+-- oauth
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON oauth
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+-- conversations
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON conversations
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+-- site_settings
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON site_settings
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
