@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, Query, status
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.models import Users
 from app.schemas.users import UserCreate, UserLogin
 from app.schemas.auth import TokenPair
-from app.core.security import get_password_hash, verify_password, create_token_pair, decode_token
+from app.core.security import get_password_hash, verify_password, create_token_pair, decode_token, create_verification_token
+from app.email.utils import send_verification_email
 
 router = APIRouter()
 
@@ -75,7 +77,7 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
 
 
 @router.post("/auth/register")
-def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
+async def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     # Check if user already exists
     existing_user = db.query(Users).filter(
         Users.email == user_data.email).first()
@@ -101,6 +103,12 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
+    verify_token = create_verification_token(new_user.email)
+    verify_url = f"{
+        settings.BASE_URL}/api/auth/verify-email?token={verify_token}"
+
+    await send_verification_email(new_user.email, verify_url)
+
     # Return registered user
     return {
         "id": str(new_user.id),
@@ -109,3 +117,40 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
         "last_name": new_user.last_name,
         "message": "User registered successfully"
     }
+
+
+@router.get("/auth/verify-email")
+def verify_email(token: str = Query(...), db: Session = Depends(get_db)):
+    # Step 1: Decode the token
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired verification token"
+        )
+
+    user_email = payload.get("email")
+    if not user_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token payload"
+        )
+
+    # Step 2: Fetch user from DB
+    user = db.query(Users).filter(Users.email == user_email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    # Step 3: Check if already verified
+    if user.is_verified:
+        return {"message": "Email already verified."}
+
+    # Step 4: Mark as verified
+    user.is_verified = True
+    db.commit()
+
+    # Step 5: Respond (your frontend can redirect from here)
+    return {"message": "Email successfully verified."}

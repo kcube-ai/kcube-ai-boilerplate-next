@@ -23,7 +23,8 @@ def _create_access_token(user_data: dict, minutes):
         "exp": datetime.now(timezone.utc) + timedelta(minutes=minutes),
         "id": user_data["id"],
         "email": user_data["email"],
-        "role": user_data["role"]
+        "role": user_data["role"],
+        "is_verified": user_data["is_verified"]
     }
 
     access_token = jwt.encode(
@@ -37,7 +38,8 @@ def _create_refresh_token(user_data: dict, minutes):
         "exp": datetime.now(timezone.utc) + timedelta(minutes=minutes),
         "id": user_data["id"],
         "email": user_data["email"],
-        "role": user_data["role"]
+        "role": user_data["role"],
+        "is_verified": user_data["is_verified"]
     }
 
     token = jwt.encode(
@@ -46,11 +48,24 @@ def _create_refresh_token(user_data: dict, minutes):
     return token
 
 
+# Create a verification token (Email Verify, Password Reset)
+# The token has a 1 hour lifespan
+def create_verification_token(email: str):
+    payload = {
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=60),
+        "email": email
+    }
+    token = jwt.encode(payload, settings.TOKEN_SECRET, algorithm="HS256")
+
+    return token
+
+
 def create_token_pair(user: Users) -> TokenPair:
     payload = {
         "id": str(user.id),
         "email": user.email,
-        "role": user.role
+        "role": user.role,
+        "is_verified": user.is_verified
     }
 
     return TokenPair(
@@ -68,10 +83,10 @@ def decode_token(token: str):
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Refresh token expired"
+            detail="Token Expired"
         )
     except jwt.InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid refresh token"
+            detail="Invalid Token"
         )

@@ -2,7 +2,7 @@ from typing import Optional
 import datetime
 import uuid
 
-from sqlalchemy import CheckConstraint, DateTime, Index, PrimaryKeyConstraint, String, UniqueConstraint, Uuid, text
+from sqlalchemy import CheckConstraint, DateTime, Index, PrimaryKeyConstraint, String, UniqueConstraint, Uuid, Boolean, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models import Base
 
@@ -38,3 +38,5 @@ class Users(Base):
     oauth: Mapped[list['OAuth']] = relationship('OAuth', back_populates='user')
     subscriptions: Mapped[list['Subscriptions']] = relationship(
         'Subscriptions', back_populates='user')
+    is_verified: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('false'))
