@@ -8,7 +8,7 @@ from app.dependencies.auth import auth_dependency
 router = APIRouter()
 
 
-@router.get("/users", dependencies=[Depends(auth_dependency)])
-def get_users(db: Session = Depends(get_db)):
+@router.get("/users")
+def get_users(db: Session = Depends(get_db), payload: dict = Depends(auth_dependency)):
     users = db.query(Users).all()
     return users

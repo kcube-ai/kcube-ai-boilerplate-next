@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException, status
+from fastapi.responses import RedirectResponse
 
-from app.core.security import decode_token
+from app.core.security import decode_token, create_verification_token
 
 app = FastAPI()
 
@@ -18,9 +19,8 @@ def auth_dependency(request: Request):
     # Extract token from header
     token = auth_header.split("Bearer ")[1]
 
-    # Verify the token
+    # Decode the token
     payload = decode_token(token)
-    print(payload)
 
     # Exception on no payload
     if not payload:
@@ -28,4 +28,11 @@ def auth_dependency(request: Request):
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Forbidden: Invalid or Expired token"
         )
+
+    if not payload.get("is_verified"):
+        raise HTTPException(
+            status_code=status.HTTP_428_PRECONDITION_REQUIRED,
+            detail="Email not verified"
+        )
+
     return payload
