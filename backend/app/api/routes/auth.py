@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, Query, status
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 from app.core.config import settings
 from app.core.database import get_db
 from app.models import Users
 from app.schemas.users import UserCreate, UserLogin
-from app.schemas.auth import TokenPair
+from app.schemas.auth import TokenPair, ResetPasswordRequest, ResetPassword
 from app.core.security import get_password_hash, verify_password, create_token_pair, decode_token, create_verification_token
-from app.email.utils import send_verification_email
+from app.email.utils import send_verification_email, send_pw_reset_email
 
 router = APIRouter()
 
@@ -115,13 +116,13 @@ async def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
         "email": new_user.email,
         "first_name": new_user.first_name,
         "last_name": new_user.last_name,
-        "message": "User registered successfully"
+        "message": "User registered successfully. A verification link has been sent to your email address."
     }
 
 
 @router.get("/auth/verify-email")
 def verify_email(token: str = Query(...), db: Session = Depends(get_db)):
-    # Step 1: Decode the token
+    # Decode the token
     payload = decode_token(token)
     if not payload:
         raise HTTPException(
@@ -136,7 +137,7 @@ def verify_email(token: str = Query(...), db: Session = Depends(get_db)):
             detail="Invalid token payload"
         )
 
-    # Step 2: Fetch user from DB
+    # Fetch user from DB
     user = db.query(Users).filter(Users.email == user_email).first()
     if not user:
         raise HTTPException(
@@ -144,13 +145,74 @@ def verify_email(token: str = Query(...), db: Session = Depends(get_db)):
             detail="User not found"
         )
 
-    # Step 3: Check if already verified
+    # Check if already verified
     if user.is_verified:
         return {"message": "Email already verified."}
 
-    # Step 4: Mark as verified
+    # Mark as verified
     user.is_verified = True
     db.commit()
 
-    # Step 5: Respond (your frontend can redirect from here)
+    # Respond (your frontend can redirect from here)
     return {"message": "Email successfully verified."}
+
+
+@router.post("/auth/request-password-reset")
+async def request_password_reset(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+    # Check if email was sent in request
+    if not data.email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Bad Request: Email not specified"
+        )
+
+    # Check if user exists
+    user = db.query(Users).filter(Users.email == data.email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    token = create_verification_token(user.email)
+    reset_url = f"{settings.BASE_URL}/reset-password?token={token}"
+    await send_pw_reset_email(user.email, reset_url)
+
+    return {"message": "password reset link has been sent to your email"}
+
+
+@router.post("/auth/reset-password")
+def reset_password(data: ResetPassword, token: str = Query(...), db: Session = Depends(get_db)):
+    # Decode the token
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired verification token"
+        )
+
+    # Check if request sent an email
+    user_email = payload.get("email")
+    if not user_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token payload"
+        )
+
+    # Fetch user from DB
+    user = db.query(Users).filter(Users.email == user_email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    hashed_password = get_password_hash(data.password)
+
+    # Update user password
+    user.password_hash = hashed_password
+
+    db.add(user)
+    db.commit()
+
+    return {"message": "Password has been reset successfully."}
