@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/kcube-boilerplate-db"
 
+    # Keys
+    FASTAPI_SESSION_KEY: str = "SuperSecretKey"
+
     # Tokens
     TOKEN_SECRET: str = "SuperSecretKey"
     ACCESS_TOKEN_EXPIRE: int = 30
@@ -24,9 +27,11 @@ class Settings(BaseSettings):
     # OAuth
     GOOGLE_CLIENT_ID: str
     GOOGLE_CLIENT_SECRET: str
-    GOOGLE_REDIRECT_URI: str
-    OAUTH_SECRET_KEY: str = "SuperSecretKey"
-    FASTAPI_SESSION_KEY: str = "SuperSecretKey"
+    META_CLIENT_ID: str
+    META_CLIENT_SECRET: str
+    MICROSOFT_CLIENT_ID: str
+    MICROSOFT_CLIENT_SECRET: str
+    MICROSOFT_TENANT_ID: str
 
     class Config:
         env_file = ".env"

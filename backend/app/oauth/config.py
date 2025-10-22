@@ -16,3 +16,20 @@ oauth.register(
         'prompt': 'select_account',
     }
 )
+
+oauth.register(
+    name='microsoft',
+    client_id=settings.MICROSOFT_CLIENT_ID,
+    client_secret=settings.MICROSOFT_CLIENT_SECRET,
+    authorize_url=f"https://login.microsoftonline.com/{
+        settings.MICROSOFT_TENANT_ID}/oauth2/v2.0/authorize",
+    access_token_url=f"https://login.microsoftonline.com/{
+        settings.MICROSOFT_TENANT_ID}/oauth2/v2.0/token",
+    api_base_url="https://graph.microsoft.com/v1.0/",
+    server_metadata_url=f"https://login.microsoftonline.com/{
+        settings.MICROSOFT_TENANT_ID}/v2.0/.well-known/openid-configuration",
+    client_kwargs={
+        'scope': 'openid email profile offline_access User.Read',
+        'prompt': 'select_account',
+    },
+)
