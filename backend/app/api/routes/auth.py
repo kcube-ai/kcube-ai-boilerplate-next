@@ -106,7 +106,7 @@ async def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
 
     verify_token = create_verification_token(new_user.email)
     verify_url = f"{
-        settings.BASE_URL}/api/auth/verify-email?token={verify_token}"
+        settings.FRONTEND_URL}/verify?token={verify_token}"
 
     await send_verification_email(new_user.email, verify_url)
 
