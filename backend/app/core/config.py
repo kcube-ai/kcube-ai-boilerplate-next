@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/kcube-boilerplate-db"
 
+    # Frontend
+    FRONTEND_URL: str = "localhost:5173"
+
     # Keys
     FASTAPI_SESSION_KEY: str = "SuperSecretKey"
 
