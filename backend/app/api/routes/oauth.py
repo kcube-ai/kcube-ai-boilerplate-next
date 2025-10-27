@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Request, Response, Depends, status
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from uuid import uuid4
 
@@ -9,6 +10,7 @@ from app.oauth.config import oauth
 from app.models.users import Users
 
 router = APIRouter()
+frontend_redirect_url = "http://localhost:5173/oauth/success"
 
 
 @router.get('/oauth/google/login')
@@ -83,9 +85,11 @@ async def google_auth(request: Request, response: Response, db: Session = Depend
         # samesite="lax",
     )
 
+    redirect_url = f"{frontend_redirect_url}?access_token={
+        token_pair.access_token}&refresh_token={token_pair.refresh_token}"
     # Return access token or redirect to frontend
     # You can return JSON if you have no frontend redirect yet
-    return token_pair
+    return RedirectResponse(url=redirect_url)
 
 
 @router.get('/oauth/microsoft/auth')
@@ -143,6 +147,8 @@ async def microsoft_auth(request: Request, response: Response, db: Session = Dep
         # samesite="lax",
     )
 
+    redirect_url = f"{frontend_redirect_url}?access_token={
+        token_pair.access_token}&refresh_token={token_pair.refresh_token}"
     # Return access token or redirect to frontend
     # You can return JSON if you have no frontend redirect yet
-    return token_pair
+    return RedirectResponse(url=redirect_url)

@@ -7,10 +7,7 @@ interface LoginPayload {
 }
 
 const LoginPage = () => {
-  const [form, setForm] = useState<LoginPayload>({
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState<LoginPayload>({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
 
   const loginMutation = useMutation({
@@ -41,6 +38,10 @@ const LoginPage = () => {
     e.preventDefault();
     setError(null);
     loginMutation.mutate(form);
+  };
+
+  const handleOAuthLogin = (provider: "google" | "microsoft") => {
+    window.location.href = `http://localhost:8000/api/oauth/${provider}/login`;
   };
 
   return (
@@ -125,7 +126,55 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <p className="text-center text-sm mt-6" style={{ color: "var(--color-link)" }}>
+        {/* --- Divider --- */}
+        <div className="flex items-center my-6">
+          <div className="flex-1 h-px" style={{ backgroundColor: "var(--color-border)" }}></div>
+          <span className="px-3 text-sm" style={{ color: "var(--color-link)" }}>
+            or
+          </span>
+          <div className="flex-1 h-px" style={{ backgroundColor: "var(--color-border)" }}></div>
+        </div>
+
+        {/* --- OAuth Buttons --- */}
+        <div className="space-y-3">
+          <button
+            onClick={() => handleOAuthLogin("google")}
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-md font-medium transition-all"
+            style={{
+              backgroundColor: "white",
+              border: "1px solid var(--color-border)",
+              color: "#202124",
+            }}
+          >
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              className="w-5 h-5"
+            />
+            Continue with Google
+          </button>
+
+          <button
+            onClick={() => handleOAuthLogin("microsoft")}
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-md font-medium transition-all"
+            style={{
+              backgroundColor: "#2F2F2F",
+              color: "#FFFFFF",
+            }}
+          >
+            <img
+              src="https://www.svgrepo.com/show/448239/microsoft.svg"
+              alt="Microsoft"
+              className="w-5 h-5 bg-white rounded-sm"
+            />
+            Continue with Microsoft
+          </button>
+        </div>
+
+        <p
+          className="text-center text-sm mt-6"
+          style={{ color: "var(--color-link)" }}
+        >
           Don’t have an account?{" "}
           <a
             href="/signup"
