@@ -103,6 +103,20 @@ const LoginPage = () => {
                 caretColor: "var(--color-accent)",
               }}
             />
+
+            {/* Forgot Password Link */}
+            <div className="text-right mt-2">
+              <a
+                href="/forgot-password"
+                className="text-sm transition-colors"
+                style={{
+                  color: "var(--color-link)",
+                  textDecoration: "underline",
+                }}
+              >
+                Forgot password?
+              </a>
+            </div>
           </div>
 
           {error && (
