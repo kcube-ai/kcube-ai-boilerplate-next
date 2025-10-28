@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import type { UseQueryOptions, UseMutationOptions } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-const base_url = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
+const base_url = import.meta.env.BACKEND_URL || "http://localhost:8000";
 
 interface ApiConfig {
   route: string;
