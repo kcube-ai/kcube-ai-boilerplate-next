@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 from fastapi import HTTPException, status
 
 from app.core.config import settings
-from app.schemas.auth import TokenPair
+from app.schemas.auth import TokenPair, TokenPayload
 from app.models.users import Users
 
 
@@ -79,7 +79,12 @@ def create_token_pair(user: Users) -> TokenPair:
 def decode_token(token: str):
     try:
         payload = jwt.decode(token, settings.TOKEN_SECRET, algorithms="HS256")
-        return payload
+        return TokenPayload(
+            id=payload["id"],
+            email=payload["email"],
+            role=payload["role"],
+            is_verified=payload["is_verified"]
+        )
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
