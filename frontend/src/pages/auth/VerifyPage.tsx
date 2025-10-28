@@ -1,28 +1,32 @@
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useApiQuery } from "../../hooks/useApi"; // adjust import path as needed
 
 const VerifyPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
 
-  const { isLoading, isError, error, isSuccess } = useQuery({
-    queryKey: ["verify-email", token],
-    queryFn: async () => {
-      if (!token) throw new Error("Missing verification token");
-      const res = await fetch(
-        `http://localhost:8000/api/auth/verify-email?token=${token}`
-      );
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || "Verification failed");
-      }
-      return res.json();
+  // Use your custom hook instead of react-query directly
+  const {
+    isLoading,
+    isError,
+    error,
+    isSuccess,
+  } = useApiQuery<{ message: string }>(
+    {
+      route: "/api/auth/verify-email",
+      method: "GET",
     },
-    enabled: !!token, // only run when token exists
-  });
+    {
+      queryParams: token ? { token } : undefined,
+    },
+    {
+      enabled: !!token, // only run when token exists
+    }
+  );
 
+  // Redirect if token missing
   useEffect(() => {
     if (!token) {
       const timer = setTimeout(() => navigate("/signup"), 2000);

@@ -175,7 +175,7 @@ async def request_password_reset(data: ResetPasswordRequest, db: Session = Depen
         )
 
     token = create_verification_token(user.email)
-    reset_url = f"{settings.BASE_URL}/reset-password?token={token}"
+    reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
     await send_pw_reset_email(user.email, reset_url)
 
     return {"message": "password reset link has been sent to your email"}

@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useApiMutation } from "../../hooks/useApi";
 
 interface RegisterPayload {
   first_name: string;
   last_name: string;
   email: string;
   password: string;
+}
+
+interface RegisterResponse {
+  message: string;
 }
 
 const SignupPage = () => {
@@ -19,28 +23,22 @@ const SignupPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const registerMutation = useMutation({
-    mutationFn: async (data: RegisterPayload) => {
-      const res = await fetch("http://localhost:8000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Registration failed");
-      }
-      return res.json();
+  const registerMutation = useApiMutation<RegisterResponse, RegisterPayload>(
+    {
+      route: "/api/auth/register",
+      method: "POST",
     },
-    onError: (err: any) => {
-      setError(err.message);
-      setSuccess(false);
-    },
-    onSuccess: () => {
-      setError(null);
-      setSuccess(true);
-    },
-  });
+    {
+      onError: (err) => {
+        setError(err.message);
+        setSuccess(false);
+      },
+      onSuccess: () => {
+        setError(null);
+        setSuccess(true);
+      },
+    }
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({

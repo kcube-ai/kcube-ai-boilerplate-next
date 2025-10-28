@@ -1,34 +1,36 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useApiMutation } from "../../hooks/useApi";
 
 interface LoginPayload {
   email: string;
   password: string;
 }
 
+interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
+
 const LoginPage = () => {
   const [form, setForm] = useState<LoginPayload>({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: LoginPayload) => {
-      const res = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || "Invalid credentials");
-      }
-      return res.json();
+  const loginMutation = useApiMutation<LoginResponse, LoginPayload>(
+    {
+      route: "/api/auth/login",
+      method: "POST",
     },
-    onError: (err: any) => setError(err.message),
-    onSuccess: () => {
-      setError(null);
-      window.location.href = "/chat"; // redirect after login
-    },
-  });
+    {
+      onError: (err) => {
+        setError(err.message);
+      },
+      onSuccess: (data) => {
+        setError(null);
+        localStorage.setItem("access_token", data.access_token);
+        window.location.href = "/chat";
+      },
+    }
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -101,6 +103,20 @@ const LoginPage = () => {
                 caretColor: "var(--color-accent)",
               }}
             />
+
+            {/* Forgot Password Link */}
+            <div className="text-right mt-2">
+              <a
+                href="/forgot-password"
+                className="text-sm transition-colors"
+                style={{
+                  color: "var(--color-link)",
+                  textDecoration: "underline",
+                }}
+              >
+                Forgot password?
+              </a>
+            </div>
           </div>
 
           {error && (
@@ -128,11 +144,20 @@ const LoginPage = () => {
 
         {/* --- Divider --- */}
         <div className="flex items-center my-6">
-          <div className="flex-1 h-px" style={{ backgroundColor: "var(--color-border)" }}></div>
-          <span className="px-3 text-sm" style={{ color: "var(--color-link)" }}>
+          <div
+            className="flex-1 h-px"
+            style={{ backgroundColor: "var(--color-border)" }}
+          ></div>
+          <span
+            className="px-3 text-sm"
+            style={{ color: "var(--color-link)" }}
+          >
             or
           </span>
-          <div className="flex-1 h-px" style={{ backgroundColor: "var(--color-border)" }}></div>
+          <div
+            className="flex-1 h-px"
+            style={{ backgroundColor: "var(--color-border)" }}
+          ></div>
         </div>
 
         {/* --- OAuth Buttons --- */}
