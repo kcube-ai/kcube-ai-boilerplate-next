@@ -12,3 +12,7 @@ class ConversationData(BaseModel):
 
 class ConversationCreate(BaseModel):
     title: Optional[str] = None
+
+
+class ConversationUpdate(BaseModel):
+    title: Optional[str] = None
