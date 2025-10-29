@@ -79,6 +79,8 @@ def create_token_pair(user: Users) -> TokenPair:
 def decode_token(token: str):
     try:
         payload = jwt.decode(token, settings.TOKEN_SECRET, algorithms="HS256")
+        if not payload.get("id"):
+            return payload
         return TokenPayload(
             id=payload["id"],
             email=payload["email"],
