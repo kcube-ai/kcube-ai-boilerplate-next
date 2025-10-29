@@ -29,7 +29,7 @@ def auth_dependency(request: Request):
             detail="Forbidden: Invalid or Expired token"
         )
 
-    if not payload.get("is_verified"):
+    if not payload.is_verified:
         raise HTTPException(
             status_code=status.HTTP_428_PRECONDITION_REQUIRED,
             detail="Email not verified"

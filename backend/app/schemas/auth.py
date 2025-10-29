@@ -12,3 +12,10 @@ class ResetPasswordRequest(BaseModel):
 
 class ResetPassword(BaseModel):
     password: str
+
+
+class TokenPayload(BaseModel):
+    id: str
+    email: str
+    role: str
+    is_verified: bool
