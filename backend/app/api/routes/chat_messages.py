@@ -11,18 +11,33 @@ from app.schemas.auth import TokenPayload
 router = APIRouter()
 
 
-@router.get("/chat-messages", response_model=list[ChatMessageData])
+@router.get("/chat-messages/{conversation_id}", response_model=list[ChatMessageData])
 def get_all_chat_messages(
+    conversation_id: str,
     db: Session = Depends(get_db),
     payload: TokenPayload = Depends(auth_dependency)
 ):
     """
-    Get all chat messages belonging to specified chat
+    Get all chat messages belonging to the specified conversation
+    owned by the authenticated user.
     """
-    messages: ChatMessageData = (
+    # Verify the conversation belongs to the authenticated user
+    conversation = (
+        db.query(Conversations)
+        .filter(Conversations.id == conversation_id, Conversations.user_id == payload.id)
+        .first()
+    )
+
+    if not conversation:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found or does not belong to the user"
+        )
+
+    # Fetch messages for that conversation
+    messages = (
         db.query(ChatMessages)
-        .join(Conversations, ChatMessages.conversation_id == Conversations.id)
-        .filter(Conversations.user_id == payload.id)
+        .filter(ChatMessages.conversation_id == conversation_id)
         .order_by(ChatMessages.created_at.asc())
         .all()
     )
