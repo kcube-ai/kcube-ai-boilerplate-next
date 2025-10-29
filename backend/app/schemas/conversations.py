@@ -8,3 +8,7 @@ class ConversationData(BaseModel):
     title: Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+
+class ConversationCreate(BaseModel):
+    title: Optional[str] = None

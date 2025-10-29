@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.conversations import Conversations
-from app.schemas.conversations import ConversationData
+from app.schemas.conversations import ConversationData, ConversationCreate
 from app.dependencies.auth import auth_dependency
 from app.schemas.auth import TokenPayload
 
@@ -28,9 +28,9 @@ def get_all_conversations(
     return conversations
 
 
-@router.get("/{conversation_id}", response_model=ConversationData)
+@router.get("/conversations/{conversation_id}", response_model=ConversationData)
 def get_single_conversation(
-    conversation_id: str,
+    conversation_id,
     db: Session = Depends(get_db),
     payload: TokenPayload = Depends(auth_dependency)
 ):
@@ -57,4 +57,30 @@ def get_single_conversation(
         title=conversation.title,
         created_at=conversation.created_at,
         updated_at=conversation.updated_at
+    )
+
+
+@router.post("/conversations", response_model=ConversationData, status_code=status.HTTP_201_CREATED)
+def create_conversation(
+    data: ConversationCreate,
+    db: Session = Depends(get_db),
+    payload: TokenPayload = Depends(auth_dependency)
+):
+    """
+    Create a new conversation for the authenticated user.
+    """
+    new_conversation = Conversations(
+        user_id=payload.id,
+        title=data.title
+    )
+
+    db.add(new_conversation)
+    db.commit()
+    db.refresh(new_conversation)
+
+    return ConversationData(
+        id=str(new_conversation.id),
+        title=new_conversation.title,
+        created_at=new_conversation.created_at,
+        updated_at=new_conversation.updated_at
     )
