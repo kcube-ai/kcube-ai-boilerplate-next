@@ -1,10 +1,11 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class ConversationData(BaseModel):
-    id: str
+    id: UUID
     title: Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
