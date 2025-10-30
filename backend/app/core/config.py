@@ -8,6 +8,11 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/kcube-boilerplate-db"
 
+    # API
+    OPENAI_API_KEY: str = ""
+    OPENAI_BASE_URL: str = ""
+    OPENAI_API_VERSION: str = ""
+
     # Frontend
     FRONTEND_URL: str = "localhost:5173"
 

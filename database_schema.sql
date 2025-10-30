@@ -135,3 +135,53 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON site_settings
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
+
+
+
+
+
+
+
+-- Insert themes
+INSERT INTO site_settings (key, json_value)
+VALUES (
+  'themes',
+  '[
+    {
+      "theme": "dark",
+      "is_default": true,
+      "link_color": "#19c37d",
+      "text_color": "#ececf1",
+      "accent_color": "#10a37f",
+      "border_color": "#565869",
+      "button_color": "#10a37f",
+      "surface_color": "#444654",
+      "background_color": "#343541",
+      "button_text_color": "#ffffff"
+    },
+    {
+      "theme": "light",
+      "is_default": false,
+      "link_color": "#19c37d",
+      "text_color": "#202123",
+      "accent_color": "#10a37f",
+      "border_color": "#d9d9e3",
+      "button_color": "#10a37f",
+      "surface_color": "#f7f7f8",
+      "background_color": "#ffffff",
+      "button_text_color": "#ffffff"
+    },
+    {
+      "theme": "custom",
+      "is_default": false,
+      "link_color": "#a78bfa",
+      "text_color": "#e0e0e6",
+      "accent_color": "#8b5cf6",
+      "border_color": "#3f3f5a",
+      "button_color": "#8b5cf6",
+      "surface_color": "#2a2a3d",
+      "background_color": "#1e1e2f",
+      "button_text_color": "#ffffff"
+    }
+  ]'::jsonb
+);
