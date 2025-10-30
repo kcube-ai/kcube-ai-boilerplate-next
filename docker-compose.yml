@@ -1,0 +1,53 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: kcube-boilerplate-backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@kcube-database:5432/kcube-boilerplate-db
+    restart: no
+    container_name: kcube-backend
+    networks:
+      - kcube-network
+
+  frontend:
+    build:
+      context: ./frontend
+    image: kcube-boilerplate-frontend
+    ports:
+      - "127.0.0.1:5173:5173"
+    environment:
+      - PORT=5173
+    restart: no
+    container_name: kcube-frontend
+    networks:
+      - kcube-network
+
+  db:
+      image: postgres:16-alpine
+      container_name: kcube-database
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=mysecretpassword
+        - POSTGRES_DB=kcube-boilerplate-db
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+        - ./database_schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 1s
+        timeout: 10s
+        retries: 20
+      networks:
+        - kcube-network
+
+volumes:
+  pgdata:
+
+networks:
+  kcube-network:
+    driver: bridge
