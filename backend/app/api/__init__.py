@@ -5,6 +5,7 @@ from app.api.routes import oauth
 from app.api.routes import site_settings
 from app.api.routes import conversations
 from app.api.routes import chat_messages
+from app.api.routes import openai
 
 
 api_router = APIRouter()
@@ -17,3 +18,4 @@ api_router.include_router(conversations.router,
                           prefix="/api", tags=["conversations"])
 api_router.include_router(chat_messages.router,
                           prefix="/api", tags=["chat_messages"])
+api_router.include_router(openai.router, prefix="/api", tags=["openai"])
