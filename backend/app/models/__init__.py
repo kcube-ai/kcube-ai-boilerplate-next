@@ -4,7 +4,7 @@ from app.models.site_settings import SiteSettings
 from app.models.feature_toggles import FeatureToggles
 from app.models.chat_messages import ChatMessages
 from app.models.conversations import Conversations
-from app.models.oauth import OAuth
+from app.models.oauth import Oauth
 from app.models.subscriptions import Subscriptions
 
 __all__ = [
@@ -13,8 +13,7 @@ __all__ = [
     "FeatureToggles",
     "ChatMessages",
     "Conversations",
-    "OAuth",
+    "Oauth",
     "Subscriptions",
     "Base",
 ]
-

@@ -7,6 +7,7 @@ CREATE TABLE users (
   password_hash varchar(256) NOT NULL,
   bio varchar(1200) DEFAULT '' NOT NULL,
   role varchar(20) DEFAULT 'user' NOT NULL CHECK (role IN ('user', 'admin')),
+  is_verified boolean NOT NULL DEFAULT false,
   created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
   updated_at timestamptz DEFAULT CURRENT_TIMESTAMP
 );

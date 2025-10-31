@@ -8,7 +8,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      - DATABASE_URL=postgresql://postgres:mysecretpassword@kcube-database:5432/kcube-boilerplate-db
+      - DATABASE_URL=postgresql://postgres:devenv@kcube-database:5432/kcube-boilerplate-db
     restart: no
     container_name: kcube-backend
     networks:
@@ -32,8 +32,10 @@ services:
       container_name: kcube-database
       environment:
         - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=mysecretpassword
+        - POSTGRES_PASSWORD=devenv
         - POSTGRES_DB=kcube-boilerplate-db
+      ports:
+        - "127.0.0.1:5432:5432"
       volumes:
         - pgdata:/var/lib/postgresql/data
         - ./database_schema.sql:/docker-entrypoint-initdb.d/schema.sql

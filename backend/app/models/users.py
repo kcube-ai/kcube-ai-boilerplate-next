@@ -28,6 +28,8 @@ class Users(Base):
         String(1200), nullable=False, server_default=text("''::character varying"))
     role: Mapped[str] = mapped_column(
         String(20), nullable=False, server_default=text("'user'::character varying"))
+    is_verified: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text('false'))
     created_at: Mapped[Optional[datetime.datetime]] = mapped_column(
         DateTime(True), server_default=text('CURRENT_TIMESTAMP'))
     updated_at: Mapped[Optional[datetime.datetime]] = mapped_column(
@@ -35,8 +37,6 @@ class Users(Base):
 
     conversations: Mapped[list['Conversations']] = relationship(
         'Conversations', back_populates='user')
-    oauth: Mapped[list['OAuth']] = relationship('OAuth', back_populates='user')
+    oauth: Mapped[list['Oauth']] = relationship('Oauth', back_populates='user')
     subscriptions: Mapped[list['Subscriptions']] = relationship(
         'Subscriptions', back_populates='user')
-    is_verified: Mapped[Optional[bool]] = mapped_column(
-        Boolean, server_default=text('false'))
