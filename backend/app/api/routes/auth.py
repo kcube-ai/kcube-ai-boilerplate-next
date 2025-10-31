@@ -6,7 +6,7 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.models import Users
 from app.schemas.users import UserCreate, UserLogin
-from app.schemas.auth import TokenPair, ResetPasswordRequest, ResetPassword
+from app.schemas.auth import TokenPair, ResetPasswordRequest, ResetPassword, TokenPayload
 from app.core.security import get_password_hash, verify_password, create_token_pair, decode_token, create_verification_token
 from app.email.utils import send_verification_email, send_pw_reset_email
 
@@ -51,10 +51,10 @@ def login_user(user_data: UserLogin, response: Response, db: Session = Depends(g
 @router.get("/auth/refresh")
 def refresh_token(request: Request, response: Response, db: Session = Depends(get_db)):
     refresh_token = request.cookies.get("refresh_token")
-    payload = decode_token(refresh_token)
+    payload: TokenPayload = decode_token(refresh_token)
 
     # Verify that the user still exists and is active
-    user = db.query(Users).filter(Users.id == payload["id"]).first()
+    user = db.query(Users).filter(Users.id == payload.id).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -77,7 +77,7 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
     return token_pair
 
 
-@router.post("/auth/register")
+@ router.post("/auth/register")
 async def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     # Check if user already exists
     existing_user = db.query(Users).filter(
@@ -120,7 +120,7 @@ async def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     }
 
 
-@router.get("/auth/verify-email")
+@ router.get("/auth/verify-email")
 def verify_email(token: str = Query(...), db: Session = Depends(get_db)):
     # Decode the token
     payload = decode_token(token)
@@ -157,7 +157,7 @@ def verify_email(token: str = Query(...), db: Session = Depends(get_db)):
     return {"message": "Email successfully verified."}
 
 
-@router.post("/auth/request-password-reset")
+@ router.post("/auth/request-password-reset")
 async def request_password_reset(data: ResetPasswordRequest, db: Session = Depends(get_db)):
     # Check if email was sent in request
     if not data.email:
@@ -181,7 +181,7 @@ async def request_password_reset(data: ResetPasswordRequest, db: Session = Depen
     return {"message": "password reset link has been sent to your email"}
 
 
-@router.post("/auth/reset-password")
+@ router.post("/auth/reset-password")
 def reset_password(data: ResetPassword, token: str = Query(...), db: Session = Depends(get_db)):
     # Decode the token
     payload = decode_token(token)
