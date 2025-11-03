@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApiQuery, useApiMutation } from "../../hooks/useApi";
+import { useThemes } from "../../hooks/useThemes";
 
 interface UserData {
   id: string;
@@ -28,6 +29,9 @@ const UserSettings = () => {
     {},
     { retry: 1 }
   );
+
+  // Theme hook
+  const { themes, currentTheme, switchTheme, isLoading: themesLoading, error: themesError } = useThemes();
 
   // Local state for form fields
   const [firstName, setFirstName] = useState("");
@@ -156,7 +160,28 @@ const UserSettings = () => {
         {/* Section 1: Theme Settings */}
         <div className="bg-surface border border-border rounded-xl shadow-md p-6 transition-colors duration-300">
           <h2 className="text-xl font-semibold text-text mb-4">Theme Preferences</h2>
-          <p className="text-text/60 text-sm">Theme customization coming soon...</p>
+          {themesLoading ? (
+            <div className="flex justify-center">
+              <div className="animate-spin h-6 w-6 rounded-full border-4 border-t-transparent border-accent" />
+            </div>
+          ) : themesError ? (
+            <p className="text-red-500 text-sm">Error loading themes: {themesError.message}</p>
+          ) : (
+            <div className="grid grid-cols-3 gap-4">
+              {themes.map((theme) => (
+                <button
+                  key={theme.theme}
+                  onClick={() => switchTheme(theme.theme)}
+                  className={`px-4 py-2 rounded-md font-medium transition-colors ${currentTheme?.theme === theme.theme
+                      ? "bg-button text-buttonText"
+                      : "bg-background border border-border hover:bg-surface"
+                    }`}
+                >
+                  {theme.theme.charAt(0).toUpperCase() + theme.theme.slice(1)}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Section 2: Profile Information */}
