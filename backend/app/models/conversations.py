@@ -3,7 +3,7 @@ import datetime
 import uuid
 
 from sqlalchemy import DateTime, ForeignKeyConstraint, Index, PrimaryKeyConstraint, String, Uuid, text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, backref
 from app.models import Base
 
 
@@ -26,7 +26,7 @@ class Conversations(Base):
     updated_at: Mapped[Optional[datetime.datetime]] = mapped_column(
         DateTime(True), server_default=text('CURRENT_TIMESTAMP'))
 
-    user: Mapped['Users'] = relationship(
-        'Users', back_populates='conversations')
     chat_messages: Mapped[list['ChatMessages']] = relationship(
         'ChatMessages', back_populates='conversation')
+    user: Mapped['Users'] = relationship(
+        'Users', backref=backref('children', cascade='all,delete'))

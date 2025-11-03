@@ -18,55 +18,73 @@ interface FetchOptions {
 async function fetcher<T>(
   config: ApiConfig,
   options: FetchOptions = {},
-  navigate?: ReturnType<typeof useNavigate> // add optional navigate
+  navigate?: ReturnType<typeof useNavigate>
 ): Promise<T> {
   const { route, method = "GET", isAuth = false } = config;
   const { body, queryParams } = options;
 
-  // Build full URL with query params
-  console.log(`${base_url}${route}`)
   const url = new URL(`${base_url}${route}`);
-  console.log(url)
   if (queryParams) {
     Object.entries(queryParams).forEach(([key, value]) =>
       url.searchParams.append(key, String(value))
     );
   }
 
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-  };
-
+  const headers: HeadersInit = { "Content-Type": "application/json" };
   if (isAuth) {
     const token = localStorage.getItem("access_token");
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(url, {
+  const response = await fetch(url, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    credentials: "include", // Important to send refresh cookie
   });
 
-  // Handle redirects if navigate is available
-  if (navigate) {
-    if (res.status === 403) {
-      navigate("/login");
-      throw new Error("Forbidden: Redirecting to login");
-    }
-
-    if (res.status === 428) {
-      navigate("/verify");
-      throw new Error("Precondition Required: Redirecting to verification");
+  // If access token is expired — try refreshing
+  if ((response.status === 401 || response.status === 403) && isAuth) {
+    const refreshed = await tryRefreshToken();
+    if (refreshed) {
+      // Retry original request with new token
+      const newToken = localStorage.getItem("access_token");
+      if (newToken) headers["Authorization"] = `Bearer ${newToken}`;
+      const retryRes = await fetch(url, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+        credentials: "include",
+      });
+      if (!retryRes.ok) throw new Error("Retry failed after refresh");
+      return retryRes.status === 204 ? null as T : retryRes.json();
+    } else {
+      navigate?.("/login");
+      throw new Error("Session expired — please log in again");
     }
   }
 
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.detail || `HTTP error: ${res.status}`);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `HTTP error: ${response.status}`);
   }
 
-  return res.json() as Promise<T>;
+  return response.status === 204 ? (null as T) : response.json();
+}
+
+async function tryRefreshToken(): Promise<boolean> {
+  try {
+    const res = await fetch(`${base_url}/api/auth/refresh`, {
+      method: "GET",
+      credentials: "include",
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    localStorage.setItem("access_token", data.access_token);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**

@@ -3,8 +3,9 @@ import datetime
 import uuid
 
 from sqlalchemy import CheckConstraint, DateTime, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Text, Uuid, text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, backref
 from app.models import Base
+
 
 class ChatMessages(Base):
     __tablename__ = 'chat_messages'
@@ -29,4 +30,4 @@ class ChatMessages(Base):
         DateTime(True), server_default=text('CURRENT_TIMESTAMP'))
 
     conversation: Mapped['Conversations'] = relationship(
-        'Conversations', back_populates='chat_messages')
+        'Conversations', backref=backref("children", cascade="all,delete"))

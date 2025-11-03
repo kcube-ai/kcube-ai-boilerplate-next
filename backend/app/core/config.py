@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     OPENAI_API_VERSION: str = ""
 
     # Frontend
-    FRONTEND_URL: str = "localhost:5173"
+    FRONTEND_URL: str = "localhost:8001"
 
     # Keys
     FASTAPI_SESSION_KEY: str = "SuperSecretKey"

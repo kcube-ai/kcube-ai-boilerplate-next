@@ -6,6 +6,7 @@ import VerifyPage from './pages/auth/VerifyPage'
 import ForgotPasswordPage from './pages/auth/ForgotPassword'
 import OAuthSuccess from './pages/auth/OAuthSuccess'
 import ResetPasswordPage from './pages/auth/ResetPassword'
+import ChatPage from './pages/main/Chat'
 
 function App() {
   useThemes()
@@ -18,6 +19,7 @@ function App() {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/verify" element={<VerifyPage />} />
       <Route path="/oauth/success" element={<OAuthSuccess />} />
+      <Route path="/chat" element={<ChatPage />} />
     </Routes>
   )
 }

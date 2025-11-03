@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models import Base
 
 
-class OAuth(Base):
+class Oauth(Base):
     __tablename__ = 'oauth'
     __table_args__ = (
         CheckConstraint(
