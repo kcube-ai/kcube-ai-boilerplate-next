@@ -13,6 +13,9 @@ services:
     container_name: kcube-backend
     networks:
       - kcube-network
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     build:
@@ -35,7 +38,7 @@ services:
         - POSTGRES_PASSWORD=devenv
         - POSTGRES_DB=kcube-boilerplate-db
       ports:
-        - "127.0.0.1:5432:5432"
+        - "127.0.0.1:5433:5432"
       volumes:
         - pgdata:/var/lib/postgresql/data
         - ./database_schema.sql:/docker-entrypoint-initdb.d/schema.sql
