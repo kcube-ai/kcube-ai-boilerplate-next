@@ -46,3 +46,26 @@ async def send_pw_reset_email(recipient: str, reset_url: str):
 
     fm = FastMail(conf)
     await fm.send_message(message)
+
+
+async def send_email_change_link(recipient: str, reset_url: str):
+    html = f"""
+    <html>
+        <body>
+            <h2>Change Email</h2>
+            <p>Open the link below to change your email</p>
+            <p>This link will expire in 1 hour</p>
+            <a>{reset_url}</a>
+        </body>
+    </html>
+    """
+
+    message = MessageSchema(
+        subject="Change your email",
+        recipients=[recipient],
+        body=html,
+        subtype=MessageType.html
+    )
+
+    fm = FastMail(conf)
+    await fm.send_message(message)

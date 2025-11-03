@@ -28,9 +28,20 @@ interface ChatMessageCreate {
   tokens_used: number;
 }
 
+interface User {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
 const ChatPage = () => {
   const queryClient = useQueryClient();
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const { data: user } = useApiQuery<User>(
+    { route: "/api/users/me", isAuth: true }
+  );
 
   const { data: conversations } = useApiQuery<Conversation[]>(
     { route: "/api/conversations", isAuth: true }
@@ -114,6 +125,8 @@ const ChatPage = () => {
 
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: [`/api/chat-messages/${convId}`] });
+
+      // Clear current conversation if it's the one being deleted
       if (currentId === convId) {
         setCurrentId(null);
       }
@@ -221,6 +234,7 @@ const ChatPage = () => {
       );
     };
 
+    // Always create a new conversation if there's no current one
     if (!currentId) {
       createConvMutation.mutate({ title: null }, {
         onSuccess: (newConv) => sendFn(newConv.id),
@@ -247,6 +261,10 @@ const ChatPage = () => {
     setEditingConvId(null);
   };
 
+  const handleSettingsClick = () => {
+    window.location.href = "/settings";
+  };
+
   return (
     <div
       className="h-screen flex transition-colors duration-300 overflow-hidden"
@@ -263,6 +281,43 @@ const ChatPage = () => {
           borderColor: "var(--color-border)",
         }}
       >
+        {/* User welcome section */}
+        {user && (
+          <div
+            className="flex items-center justify-between mb-4 pb-4 border-b"
+            style={{ borderColor: "var(--color-border)" }}
+          >
+            <span className="font-medium truncate">Hello, {user.first_name}!</span>
+            <button
+              onClick={handleSettingsClick}
+              className="cursor-pointer p-1 rounded-md hover:bg-[var(--color-accent)]/10 transition-colors"
+              aria-label="Settings"
+              title="Settings"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+
         <button
           onClick={() => createConvMutation.mutate({ title: null })}
           disabled={createConvMutation.isPending}
@@ -340,34 +395,70 @@ const ChatPage = () => {
       {/* Chat Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {(messages || []).map((msg) => (
-            <div
-              key={msg.id}
-              className={`max-w-3xl mx-auto w-full flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`p-4 rounded-lg ${msg.role === "user" ? "bg-[var(--color-button)] text-[var(--color-button-text)]" : "bg-[var(--color-surface)] text-[var(--color-text)]"}`}
-                style={{
-                  border: `1px solid var(--color-border)`,
-                }}
-              >
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
-              </div>
-            </div>
-          ))}
-          {isGenerating && (
-            <div className="max-w-3xl mx-auto w-full flex justify-start">
-              <div
-                className="p-4 rounded-lg bg-[var(--color-surface)] text-[var(--color-text)]"
-                style={{
-                  border: `1px solid var(--color-border)`,
-                }}
-              >
-                Typing...
+          {currentId ? (
+            <>
+              {(messages || []).map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`w-full flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`p-4 rounded-lg max-w-[70%] break-words ${msg.role === "user"
+                        ? "bg-[var(--color-button)] text-[var(--color-button-text)]"
+                        : "bg-[var(--color-surface)] text-[var(--color-text)]"
+                      }`}
+                    style={{
+                      border: `1px solid var(--color-border)`,
+                      overflowWrap: "break-word",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  </div>
+                </div>
+              ))}
+              {isGenerating && (
+                <div className="w-full flex justify-start">
+                  <div
+                    className="p-4 rounded-lg bg-[var(--color-surface)] text-[var(--color-text)] max-w-[70%]"
+                    style={{
+                      border: `1px solid var(--color-border)`,
+                    }}
+                  >
+                    Typing...
+                  </div>
+                </div>
+              )}
+              <div ref={chatEndRef} />
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center space-y-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-16 h-16 mx-auto opacity-50"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  />
+                </svg>
+                <div className="space-y-2">
+                  <h2 className="text-xl font-semibold" style={{ color: "var(--color-text)" }}>
+                    No conversation selected
+                  </h2>
+                  <p className="text-sm opacity-70" style={{ color: "var(--color-text)" }}>
+                    Select a conversation from the sidebar or start a new chat
+                  </p>
+                </div>
               </div>
             </div>
           )}
-          <div ref={chatEndRef} />
         </div>
 
         <div
@@ -395,7 +486,7 @@ const ChatPage = () => {
             <button
               onClick={handleSend}
               disabled={!input.trim() || isGenerating}
-              className="p-2 rounded-md transition-colors cursor-pointer"
+              className="p-2 rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: "var(--color-button)",
                 color: "var(--color-button-text)",

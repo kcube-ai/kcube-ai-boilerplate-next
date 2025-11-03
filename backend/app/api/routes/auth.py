@@ -4,11 +4,12 @@ from datetime import datetime
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.dependencies.auth import auth_dependency
 from app.models import Users
 from app.schemas.users import UserCreate, UserLogin
-from app.schemas.auth import TokenPair, ResetPasswordRequest, ResetPassword, TokenPayload
+from app.schemas.auth import TokenPair, ResetPasswordRequest, ResetPassword, TokenPayload, ChangeEmailRequest
 from app.core.security import get_password_hash, verify_password, create_token_pair, decode_token, create_verification_token
-from app.email.utils import send_verification_email, send_pw_reset_email
+from app.email.utils import send_verification_email, send_pw_reset_email, send_email_change_link
 
 router = APIRouter()
 
@@ -216,3 +217,93 @@ def reset_password(data: ResetPassword, token: str = Query(...), db: Session = D
     db.commit()
 
     return {"message": "Password has been reset successfully."}
+
+
+@router.post("/auth/request-email-change")
+async def request_email_change(
+    data: ChangeEmailRequest,
+    db: Session = Depends(get_db),
+    payload: TokenPayload = Depends(auth_dependency)
+):
+    """
+    Step 1: Authenticated user requests email change.
+    - Receives `new_email` in the body.
+    - Creates a verification token using the *current* email.
+    - Sends verification email to the *new* email.
+    """
+    # Validate new email is different
+    if data.new_email == payload.email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New email cannot be the same as the current email."
+        )
+
+    # Check if new email already exists
+    existing_user = db.query(Users).filter(
+        Users.email == data.new_email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This email is already in use."
+        )
+
+    # Create verification token based on current email
+    token = create_verification_token(payload.email)
+
+    # Build verification URL
+    verify_url = f"{
+        settings.FRONTEND_URL}/verify-email-change?token={token}&new_email={data.new_email}"
+
+    # Send verification to the *new* email
+    await send_email_change_link(data.new_email, verify_url)
+
+    return {"message": "Verification link sent to new email address."}
+
+
+@router.post("/auth/confirm-email-change")
+def confirm_email_change(
+    new_email: str = Query(...),
+    token: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    """
+    Step 2: User clicks verification link.
+    - Token is decoded using the *old* email.
+    - If valid, updates email to `new_email`.
+    """
+    # Decode token and verify
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired verification token."
+        )
+
+    current_email = payload.get("email")
+    if not current_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token payload."
+        )
+
+    # Find user by old email
+    user = db.query(Users).filter(Users.email == current_email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found."
+        )
+
+    # Double-check new_email not in use
+    if db.query(Users).filter(Users.email == new_email).first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This new email is already in use."
+        )
+
+    # Update email
+    user.email = new_email
+    db.add(user)
+    db.commit()
+
+    return {"message": "Email changed successfully."}
