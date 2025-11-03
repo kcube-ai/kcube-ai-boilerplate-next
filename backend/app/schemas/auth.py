@@ -14,6 +14,10 @@ class ResetPassword(BaseModel):
     password: str
 
 
+class ChangeEmailRequest(BaseModel):
+    new_email: str
+
+
 class TokenPayload(BaseModel):
     id: str
     email: str
