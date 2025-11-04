@@ -9,13 +9,13 @@ export function GettingStarted() {
             Getting Started
           </h2>
           <p className="text-muted-foreground">
-            Learn how to create your account and get started with {APP_NAME}
+            Learn how to set up and start building with {APP_NAME}
           </p>
         </div>
         <div className="bg-card border border-border rounded-lg p-6 space-y-6">
           <div>
             <h3 className="text-xl font-semibold text-foreground mb-4">
-              Creating Your Account
+              Quick Setup Guide
             </h3>
             <div className="space-y-4">
               <div className="flex gap-4">
@@ -24,12 +24,11 @@ export function GettingStarted() {
                 </div>
                 <div>
                   <h4 className="font-medium text-foreground mb-1">
-                    Visit the Sign Up Page
+                    Clone the Repository
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    Navigate to the sign up page by clicking the "Get Started"
-                    button on the homepage or visiting the sign up link
-                    directly.
+                    Clone the template repository and navigate to the project
+                    directory to begin setup.
                   </p>
                 </div>
               </div>
@@ -39,12 +38,11 @@ export function GettingStarted() {
                 </div>
                 <div>
                   <h4 className="font-medium text-foreground mb-1">
-                    Enter Your Details
+                    Configure Environment
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    Provide your full name, email address, and create a secure
-                    password. Make sure to use a valid email address as you'll
-                    need it for verification.
+                    Copy .env.example to .env and configure your database,
+                    JWT secrets, email service, and other required settings.
                   </p>
                 </div>
               </div>
@@ -54,12 +52,11 @@ export function GettingStarted() {
                 </div>
                 <div>
                   <h4 className="font-medium text-foreground mb-1">
-                    Verify Your Email
+                    Run Migrations
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    After signing up, you'll receive a 6-digit verification code
-                    via email. Enter this code on the verification page to
-                    activate your account.
+                    Initialize your database with Alembic migrations to create
+                    all necessary tables and schemas.
                   </p>
                 </div>
               </div>
@@ -69,12 +66,11 @@ export function GettingStarted() {
                 </div>
                 <div>
                   <h4 className="font-medium text-foreground mb-1">
-                    Start Using {APP_NAME}
+                    Start Development
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    Once verified, you'll be automatically logged in and
-                    redirected to your dashboard where you can start connecting
-                    your Xero account and uploading files.
+                    Run the backend with uvicorn and frontend with pnpm dev.
+                    Your application is now ready for development!
                   </p>
                 </div>
               </div>
@@ -82,9 +78,9 @@ export function GettingStarted() {
           </div>
           <div className="pt-4 border-t border-border">
             <p className="text-sm text-muted-foreground">
-              <strong className="text-foreground">Note:</strong> If you don't
-              receive the verification email, check your spam folder or request
-              a new code from the verification page.
+              <strong className="text-foreground">Note:</strong> See the
+              CLAUDE.md and ARCHITECTURE.md files in the repository for
+              detailed setup instructions and architectural guidelines.
             </p>
           </div>
         </div>

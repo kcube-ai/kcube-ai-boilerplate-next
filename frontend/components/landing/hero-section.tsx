@@ -12,17 +12,17 @@ export function HeroSection() {
           {/* Left Column - Content */}
           <div className="space-y-8">
             <h1 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-              Analyze & Manage accounting data with{" "}
+              Build Your Next SaaS with{" "}
               <span className={COMPONENT_CLASSES.TEXT_GRADIENT}>
-                Powerful AI
+                Production-Ready Code
               </span>
               .
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed">
-              AI-powered SaaS application designed to revolutionize the way you
-              manage and analyze your accounting data. AI empowers businesses by
-              providing accurate, timely, and insightful financial analysis.
+              A modern full-stack template combining FastAPI and Next.js 15.
+              Features authentication, modular architecture, and best practices
+              to accelerate your development from prototype to production.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -31,29 +31,29 @@ export function HeroSection() {
                   size="lg"
                   className={`${COMPONENT_CLASSES.BUTTON_PRIMARY} w-full sm:w-auto`}
                 >
-                  Start free trial
+                  Get started
                 </Button>
               </Link>
-              <Link href="/support#book-demo">
+              <Link href="/support">
                 <Button
                   variant="outline"
                   size="lg"
                   className={`${COMPONENT_CLASSES.BUTTON_SECONDARY} w-full sm:w-auto`}
                 >
-                  Book a demo
+                  View documentation
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Right Column - Chat Demo */}
+          {/* Right Column - Feature Demo */}
           <div className="relative mt-8 lg:mt-0">
-            {/* Xero Integration Icon */}
+            {/* API Icon */}
             <div className="absolute -top-6 right-4 sm:right-8 z-10 hidden sm:block">
               <div className="bg-card rounded-full p-2 sm:p-3 lg:p-4 shadow-sample-sm border border-border">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-primary rounded-full flex items-center justify-center">
                   <span className="text-primary-foreground font-bold text-xs sm:text-sm lg:text-base">
-                    XERO
+                    API
                   </span>
                 </div>
               </div>
@@ -69,8 +69,7 @@ export function HeroSection() {
                 </div>
                 <div className="bg-primary text-primary-foreground rounded-2xl rounded-tl-sm px-4 py-3 sm:px-5 sm:py-3.5 lg:px-6 lg:py-4 max-w-[280px] sm:max-w-xs">
                   <p className="text-sm font-medium">
-                    What were the total sales and net profits for the quarter
-                    ending December 31, 2024?
+                    How do I integrate authentication into my application?
                   </p>
                 </div>
               </div>
@@ -79,20 +78,18 @@ export function HeroSection() {
               <div className="flex gap-3">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-full flex-shrink-0 flex items-center justify-center">
                   <span className="text-primary-foreground font-bold text-base sm:text-lg">
-                    M
+                    S
                   </span>
                 </div>
                 <div className="bg-muted border border-border rounded-2xl rounded-tl-sm px-4 py-3 sm:px-5 sm:py-3.5 lg:px-6 lg:py-4 shadow-sample-sm flex-1">
                   <p className="text-sm text-foreground leading-relaxed">
-                    According to our financial records, the total sales for the
-                    quarter ending December 31, 2024, were{" "}
-                    <span className="font-semibold">$1,200,000</span>.
+                    The template includes complete{" "}
+                    <span className="font-semibold">JWT authentication</span>{" "}
+                    with email verification and 2FA support.
                     <br />
                     <br />
-                    As for net profits, we saw a significant improvement, with a
-                    net profit of{" "}
-                    <span className="font-semibold">$250,000</span> for the
-                    quarter ending December 31, 2024.
+                    Simply use the pre-built endpoints for signup, login, and
+                    protected routes. All session management is handled for you.
                   </p>
                 </div>
               </div>
@@ -105,7 +102,7 @@ export function HeroSection() {
                   className="bg-muted hover:bg-accent text-xs"
                 >
                   <Sparkles className="w-3 h-3 mr-1" />
-                  Compare to Q4 2023
+                  Add OAuth providers
                 </Button>
                 <Button
                   variant="ghost"
@@ -113,12 +110,12 @@ export function HeroSection() {
                   className="bg-muted hover:bg-accent text-xs"
                 >
                   <Sparkles className="w-3 h-3 mr-1" />
-                  Monthly Cashflow QoQ
+                  Customize email templates
                 </Button>
               </div>
             </div>
 
-            {/* File Integration Icon */}
+            {/* Frontend Icon */}
             <div className="absolute -bottom-4 right-2 sm:right-0 sm:bottom-4 z-10 hidden sm:block">
               <div className="bg-card rounded-full p-2 sm:p-3 shadow-sample-sm border border-border">
                 <div

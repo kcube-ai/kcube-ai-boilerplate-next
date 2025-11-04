@@ -1,69 +1,66 @@
-"use client";
+import { Book, Code, Database, Shield } from "lucide-react";
+import Link from "next/link";
+import type { Metadata } from "next";
 
-import { useEffect, useState } from "react";
-
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Footer } from "@/components/landing/footer";
 import { Navigation } from "@/components/landing/navigation";
 import { APP_NAME } from "@/config/app";
-import { usePageTitle } from "@/hooks/use-page-title";
 
-import { BookDemo } from "./components/book-demo";
-import { ChatFiles } from "./components/chat-files";
-import { ChatXero } from "./components/chat-xero";
-import { ConnectXero } from "./components/connect-xero";
-import { ContactSupport } from "./components/contact-support";
-import { DataFlow } from "./components/data-flow";
-import { FAQs } from "./components/faqs";
-import { GettingStarted } from "./components/getting-started";
-import { TableOfContents } from "./components/table-of-contents";
+export const metadata: Metadata = {
+  title: `Documentation & Support - ${APP_NAME}`,
+  description: "Complete documentation and guides for the Sample AI template",
+};
+
+const documentationSections = [
+  {
+    icon: Book,
+    title: "Getting Started",
+    description:
+      "Learn how to set up the template, configure environment variables, and run your first application.",
+    links: [
+      { label: "Quick Start Guide", href: "#" },
+      { label: "Environment Setup", href: "#" },
+      { label: "Installation", href: "#" },
+    ],
+  },
+  {
+    icon: Code,
+    title: "Backend Development",
+    description:
+      "Understand the FastAPI architecture, module system, and how to add new features to the backend.",
+    links: [
+      { label: "Architecture Overview", href: "#" },
+      { label: "Creating Modules", href: "#" },
+      { label: "API Endpoints", href: "#" },
+    ],
+  },
+  {
+    icon: Shield,
+    title: "Authentication & Security",
+    description:
+      "Learn about JWT authentication, email verification, 2FA implementation, and security best practices.",
+    links: [
+      { label: "Authentication Flow", href: "#" },
+      { label: "2FA Setup", href: "#" },
+      { label: "Security Guidelines", href: "#" },
+    ],
+  },
+  {
+    icon: Database,
+    title: "Database & Migrations",
+    description:
+      "Work with PostgreSQL, create models, run migrations, and manage database operations.",
+    links: [
+      { label: "Database Setup", href: "#" },
+      { label: "Creating Models", href: "#" },
+      { label: "Running Migrations", href: "#" },
+    ],
+  },
+];
 
 export default function SupportPage() {
-  usePageTitle(`Support & Documentation - ${APP_NAME}`);
-  const [activeSection, setActiveSection] = useState<string>("");
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-20% 0px -80% 0px" }
-    );
-
-    document.querySelectorAll("section[id]").forEach((section) => {
-      observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const sections = [
-    { id: "getting-started", title: "Getting Started" },
-    { id: "connect-xero", title: "Connect to Xero" },
-    { id: "chat-xero", title: "Chat with Xero Data" },
-    { id: "chat-files", title: "Chat with Files" },
-    { id: "data-flow", title: "Data Flow" },
-    { id: "faqs", title: "FAQs" },
-    { id: "book-demo", title: "Book a Demo" },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -71,27 +68,64 @@ export default function SupportPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-12">
             <h1 className="text-4xl lg:text-5xl font-bold text-foreground">
-              Support & Documentation
+              Documentation & Support
             </h1>
-            <p className="text-lg text-muted-foreground">
-              Everything you need to know about using {APP_NAME}
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Complete guides and documentation to help you build with {APP_NAME}
             </p>
           </div>
-          <div className="flex flex-col lg:flex-row gap-8">
-            <TableOfContents
-              sections={sections}
-              activeSection={activeSection}
-              onSectionClick={scrollToSection}
-            />
-            <div className="flex-1 space-y-16">
-              <GettingStarted />
-              <ConnectXero />
-              <ChatXero />
-              <ChatFiles />
-              <DataFlow />
-              <FAQs />
-              <BookDemo />
-              <ContactSupport />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {documentationSections.map((section, index) => {
+              const Icon = section.icon;
+              return (
+                <Card key={index} className="border-border">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <CardTitle className="text-xl">{section.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground text-sm">
+                      {section.description}
+                    </p>
+                    <div className="space-y-2">
+                      {section.links.map((link, linkIndex) => (
+                        <Link
+                          key={linkIndex}
+                          href={link.href}
+                          className="block text-sm text-primary hover:underline"
+                        >
+                          → {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          <div className="bg-card border border-border rounded-lg p-8 text-center space-y-4">
+            <h2 className="text-2xl font-bold text-foreground">
+              Need More Help?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Check out the complete documentation in the repository for detailed
+              guides, architecture explanations, and best practices.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Button asChild>
+                <Link href="https://github.com/triplek-tech/sample-ai">
+                  View on GitHub
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/">Back to Home</Link>
+              </Button>
             </div>
           </div>
         </div>

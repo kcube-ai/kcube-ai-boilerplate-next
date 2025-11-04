@@ -1,5 +1,5 @@
 import { DIMENSIONS, SPACING } from "@/constants/ui";
-import { Check, FileText, Loader2 } from "lucide-react";
+import { Check, Code, Loader2 } from "lucide-react";
 
 export function IntegrationSection() {
   return (
@@ -9,32 +9,32 @@ export function IntegrationSection() {
           {/* Left Column - Content */}
           <div className="space-y-6">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
-              Upload files or Integrate with your Accounting tool.
+              Extend with Modules or Build Your Own Features.
             </h2>
 
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Easily upload your accounting data or seamlessly connect with Xero
-              to streamline your financial management.
+              Add new functionality using the modular architecture or customize
+              existing features to match your specific requirements.
               <br />
               <br />
-              Our team is constantly working on new integrations with popular
-              accounting platforms and tools, exciting additions coming soon.
+              The clean layered structure makes it easy to add API endpoints,
+              business logic, and database operations without breaking existing code.
             </p>
           </div>
 
           {/* Right Column - Visual Demo */}
           <div className="relative">
-            {/* File List */}
+            {/* Module List */}
             <div
               className={`bg-card border border-border ${DIMENSIONS.RADIUS_FILE_DROP} shadow-sample ${SPACING.CARD_PADDING} space-y-4 mb-6`}
             >
               <div className="flex items-center justify-between py-3 border-b border-border">
                 <div className="flex items-center gap-3">
-                  <FileText
+                  <Code
                     className={`${SPACING.ICON_SIZE} text-foreground`}
                   />
                   <span className="text-sm font-medium text-foreground">
-                    Sydney co. 2024 invoices.xls
+                    modules/user/api.py
                   </span>
                 </div>
                 <Check className={`${SPACING.ICON_SIZE} text-green-500`} />
@@ -42,11 +42,11 @@ export function IntegrationSection() {
 
               <div className="flex items-center justify-between py-3 border-b border-border">
                 <div className="flex items-center gap-3">
-                  <FileText
+                  <Code
                     className={`${SPACING.ICON_SIZE} text-foreground`}
                   />
                   <span className="text-sm font-medium text-foreground">
-                    Breeze - Sales (Aug 2024).pdf
+                    modules/two_fa/api.py
                   </span>
                 </div>
                 <Check className={`${SPACING.ICON_SIZE} text-green-500`} />
@@ -54,11 +54,11 @@ export function IntegrationSection() {
 
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center gap-3">
-                  <FileText
+                  <Code
                     className={`${SPACING.ICON_SIZE} text-muted-foreground`}
                   />
                   <span className="text-sm font-medium text-muted-foreground">
-                    Fit Bit - Budget (2024).xlsx
+                    modules/my_feature/api.py
                   </span>
                 </div>
                 <Loader2
@@ -67,11 +67,11 @@ export function IntegrationSection() {
               </div>
             </div>
 
-            {/* Integration Icons */}
+            {/* Stack Icons */}
             <div className="flex justify-center items-center gap-6">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-sample-sm">
-                <span className="text-primary-foreground font-bold text-sm">
-                  XERO
+                <span className="text-primary-foreground font-bold text-xs">
+                  FastAPI
                 </span>
               </div>
               <div className="w-2 h-2 bg-muted-foreground rounded-full"></div>
@@ -80,7 +80,7 @@ export function IntegrationSection() {
               <div
                 className={`w-16 h-16 bg-accent ${DIMENSIONS.RADIUS_SM} flex items-center justify-center shadow-sample-sm`}
               >
-                <FileText className="w-8 h-8 text-muted-foreground" />
+                <span className="text-foreground font-bold text-xs">Next.js</span>
               </div>
             </div>
           </div>

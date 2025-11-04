@@ -10,23 +10,23 @@ import { DIMENSIONS } from "@/constants/ui";
 const faqs = [
   {
     question: `What is ${APP_NAME}?`,
-    answer: `${APP_NAME} is your AI-powered accounting assistant, built to make accounting insights instant and effortless. Seamlessly integrated with Xero, ${APP_NAME} lets you ask questions about your finances and get fast, accurate answers—turning complex data into clear, actionable insights for smarter decisions.`,
+    answer: `${APP_NAME} is a production-ready full-stack template combining FastAPI and Next.js 15. It provides authentication, modular architecture, and best practices to help you build SaaS applications quickly and confidently.`,
   },
   {
-    question: "How does it work?",
-    answer: `${APP_NAME} syncs directly with your accounting data from Xero, transforming numbers into insights on demand. Just ask ${APP_NAME} a question, and our powerful AI dives into your data to deliver fast, accurate answers. It's like having an accounting expert at your fingertips, ready to simplify your financials and keep your business on track.`,
+    question: "What features are included?",
+    answer: `The template includes JWT authentication with email verification and 2FA, user management, password reset, modular backend architecture with layered design (API/Service/DB), PostgreSQL database with migrations, Redis rate limiting, SendGrid email integration, and a modern Next.js 15 frontend with TypeScript and Tailwind CSS.`,
   },
   {
-    question: "What type of accounting data can the tool analyze?",
-    answer: `${APP_NAME} currently syncs with Xero for instant insights into your financial data. You can also upload PDFs and business docs to unlock insights fast. And we're not stopping there—soon, ${APP_NAME} will support even more accounting platforms to power up your data like never before!`,
+    question: "How do I get started?",
+    answer: `Clone the repository, copy .env.example to .env and configure your environment variables, run database migrations with Alembic, start the backend with uvicorn, and start the frontend with pnpm dev. Full setup instructions are available in the documentation.`,
   },
   {
-    question: "Is there a free trial?",
-    answer: `Yes, ${APP_NAME} offers a free 14-day trial, allowing you to experience its full range of features without any commitment.`,
+    question: "Can I customize it for my needs?",
+    answer: `Absolutely! The modular architecture makes it easy to add new features, modify existing ones, or remove what you don't need. Each module is self-contained with clear separation between API, service, and database layers.`,
   },
   {
-    question: `How does ${APP_NAME} ensure data security and privacy?`,
-    answer: `${APP_NAME} is built with enterprise-grade security, delivering robust, industry-standard protection for your data. We prioritize your privacy—our AI provides insights without any training on your data, ensuring that your information stays private, secure, and fully protected at all times.`,
+    question: `Is it production-ready?`,
+    answer: `Yes, ${APP_NAME} follows industry best practices with secure authentication, proper error handling, database migrations, rate limiting, Docker support, and comprehensive documentation. It's designed to be deployed to production with confidence.`,
   },
 ];
 

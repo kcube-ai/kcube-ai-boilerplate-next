@@ -1,32 +1,32 @@
-import { Brain, FileText, Search, TrendingUp } from "lucide-react";
+import { Database, Lock, Layers, Zap } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { APP_NAME } from "@/config/app";
 import { ANIMATIONS, DIMENSIONS } from "@/constants/ui";
 
 const features = [
   {
-    icon: Search,
-    title: "Analyze with AI",
-    description: `${APP_NAME} analyzes complex accounting data with AI to make information business decisions and drive growth.`,
+    icon: Zap,
+    title: "Fast Development",
+    description:
+      "Start building immediately with pre-configured authentication, database models, and API endpoints. No boilerplate setup required.",
   },
   {
-    icon: TrendingUp,
-    title: "Actionable insight",
+    icon: Lock,
+    title: "Secure by Default",
     description:
-      "Get actionable insights, identify trends and forecast future performance by harnessing the power of machine learning.",
+      "Built-in JWT authentication, password hashing, email verification, 2FA support, and rate limiting to protect your application.",
   },
   {
-    icon: FileText,
-    title: "Any dataset",
+    icon: Layers,
+    title: "Modular Architecture",
     description:
-      "Integrate with your current accounting systems like Xero, use any dataset you have or upload files.",
+      "Clean separation of concerns with API, service, and database layers. Easy to extend and maintain as your application grows.",
   },
   {
-    icon: Brain,
-    title: "Domain Specific Models",
+    icon: Database,
+    title: "Production Ready",
     description:
-      "Accounting specific trained language models that accurately interpret and analyze financial data, identify errors and provide expert-level insights.",
+      "PostgreSQL with migrations, Redis caching, Docker support, and comprehensive error handling. Deploy with confidence.",
   },
 ];
 

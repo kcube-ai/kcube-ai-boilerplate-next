@@ -11,15 +11,15 @@ import { SecuritySection } from "@/components/landing/security-section";
 import { VideoSection } from "@/components/landing/video-section";
 
 export const metadata: Metadata = {
-  title: "Sample AI - Analyze & Manage Accounting Data with Powerful AI",
+  title: "Sample AI - Full-Stack SaaS Application Template",
   description:
-    "AI-powered SaaS application designed to revolutionize the way you manage and analyze your accounting data. AI empowers businesses by providing accurate, timely, and insightful financial analysis.",
+    "Modern full-stack SaaS application template with FastAPI backend and Next.js frontend. Features authentication, modular architecture, and production-ready infrastructure.",
   keywords: [
-    "AI",
-    "accounting",
-    "financial analysis",
-    "Xero integration",
-    "business intelligence",
+    "SaaS template",
+    "FastAPI",
+    "Next.js",
+    "authentication",
+    "full-stack",
   ],
 };
 
