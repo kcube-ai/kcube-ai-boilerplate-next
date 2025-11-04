@@ -20,10 +20,13 @@ class Settings(BaseModel):
     APP_PUBLIC_URL: str = get_env("APP_PUBLIC_URL")
     ENABLE_USER_EMAILS: bool = get_env_bool("ENABLE_USER_EMAILS")
 
-    # API Configuration
+    # API
     API_PREFIX: str = get_env("API_PREFIX")
 
-    # CORS Configuration
+    # Documents
+    MAX_DOCUMENTS_PER_USER: int = 10
+
+    # CORS
     CORS_ORIGINS: str = get_env("CORS_ORIGINS")
     CORS_ALLOW_HEADERS: str = get_env("CORS_ALLOW_HEADERS")
     CORS_ALLOW_METHODS: str = get_env("CORS_ALLOW_METHODS")
@@ -65,15 +68,33 @@ class Settings(BaseModel):
     # Redis
     REDIS_URL: str = get_env("REDIS_URL")
 
-    # Tokens Expiration
+    # Tokens
     PASSWORD_RESET_TOKEN_EXPIRY_HOURS: int = get_env_int(
         "PASSWORD_RESET_TOKEN_EXPIRY_HOURS"
     )
 
-    # Google OAuth
-    GOOGLE_OAUTH_CLIENT_ID: str = get_env("GOOGLE_OAUTH_CLIENT_ID")
-    GOOGLE_OAUTH_CLIENT_SECRET: str = get_env("GOOGLE_OAUTH_CLIENT_SECRET")
-    GOOGLE_OAUTH_REDIRECT_URI: str = get_env("GOOGLE_OAUTH_REDIRECT_URI")
+    # Azure OpenAI
+    AZURE_OPENAI_API_KEY: str = get_env("AZURE_OPENAI_API_KEY")
+    AZURE_OPENAI_VERSION: str = get_env("AZURE_OPENAI_VERSION")
+    AZURE_OPENAI_ENDPOINT: str = get_env("AZURE_OPENAI_ENDPOINT")
+    AZURE_OPENAI_CHAT_MODEL: str = get_env("AZURE_OPENAI_CHAT_MODEL")
+
+    # Google
+    GOOGLE_CLIENT_ID: str = get_env("GOOGLE_CLIENT_ID")
+    GOOGLE_CLIENT_SECRET: str = get_env("GOOGLE_CLIENT_SECRET")
+    GOOGLE_LOGIN_REDIRECT_URI: str = get_env("GOOGLE_LOGIN_REDIRECT_URI")
+
+    # Xero
+    XERO_CLIENT_ID: str = get_env("XERO_CLIENT_ID")
+    XERO_CLIENT_SECRET: str = get_env("XERO_CLIENT_SECRET")
+    XERO_LOGIN_REDIRECT_URI: str = get_env("XERO_LOGIN_REDIRECT_URI")
+    XERO_ORGANIZATION_REDIRECT_URI: str = get_env("XERO_ORGANIZATION_REDIRECT_URI")
+
+    # Azure Key Vault
+    AZURE_KEY_VAULT_TENANT_ID: str = get_env("AZURE_KEY_VAULT_TENANT_ID")
+    AZURE_KEY_VAULT_CLIENT_ID: str = get_env("AZURE_KEY_VAULT_CLIENT_ID")
+    AZURE_KEY_VAULT_CLIENT_SECRET: str = get_env("AZURE_KEY_VAULT_CLIENT_SECRET")
+    AZURE_KEY_VAULT_URL: str = get_env("AZURE_KEY_VAULT_URL")
 
     @computed_field
     @property

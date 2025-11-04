@@ -1,8 +1,8 @@
-# Sample App - Frontend Design System
+# Sample AI - Frontend Design System
 
 ## Overview
 
-This document defines the complete design system for the Sample App frontend application. All components, pages, and features **MUST** follow these guidelines to ensure consistency and professionalism across the entire application.
+This document defines the complete design system for the Sample AI frontend application. All components, pages, and features **MUST** follow these guidelines to ensure consistency and professionalism across the entire application.
 
 ---
 
@@ -43,7 +43,7 @@ This document defines the complete design system for the Sample App frontend app
 
 ### Dark/Light Mode Theming
 
-**Sample App supports both light and dark modes** using `next-themes` and CSS variables. All colors automatically adapt to the selected theme.
+**Sample AI supports both light and dark modes** using `next-themes` and CSS variables. All colors automatically adapt to the selected theme.
 
 #### Theme Provider Setup
 
@@ -127,7 +127,7 @@ border-input        // Input field borders (adapts to theme)
 #### Status Colors
 ```tsx
 bg-destructive              // Error backgrounds
-text-destructive-foreground // Text on destructive bg 
+text-destructive-foreground // Text on destructive bg
 ```
 
 ### Legacy Brand Colors (For Reference)
@@ -1202,4 +1202,4 @@ When adding new design patterns:
 ---
 
 **Last Updated**: January 10, 2025
-**Maintained By**: Sample App Development Team
+**Maintained By**: Sample AI Development Team

@@ -1,6 +1,6 @@
 # Backend Architecture - Complete Guide
 
-This document provides comprehensive architectural guidelines for the Sample backend, based on actual codebase analysis and established patterns.
+This document provides comprehensive architectural guidelines for the Sample AI backend, based on actual codebase analysis and established patterns.
 
 ## Table of Contents
 
@@ -1094,19 +1094,37 @@ backend/modules/user/
 └── lib.py              # Utility functions
 ```
 
-### Shared Services
+---
 
-For functionality used across multiple modules, create shared services in `backend/services/`:
+## Shared Services
 
-```
-backend/services/
-├── __init__.py
-└── google_oauth.py     # Google OAuth service
-```
+### Overview
+
+Services that are used across multiple modules should be placed in `backend/services/` instead of within a specific module. These services provide common functionality that doesn't belong to any single feature module.
+
+**Purpose:** Cross-module functionality, external integrations, stateless operations.
+
+**Characteristics:**
+
+- ✅ Stateless (no database operations)
+- ✅ Used by multiple modules
+- ✅ External API integrations (OAuth, payments, etc.)
+- ✅ Typed return values (Pydantic models)
+- ✅ Configuration from settings
+- ✅ Async methods when appropriate
+- ❌ No database access (use modules for that)
+- ❌ No business logic specific to one module
+
+### Example: Google OAuth Service
 
 **Pattern** (from `backend/services/google_oauth.py`):
 
 ```python
+"""
+Google OAuth 2.0 integration service.
+Handles authorization URL generation and user information retrieval.
+"""
+
 from urllib.parse import urlencode
 
 import httpx
@@ -1124,32 +1142,30 @@ class GoogleUserInfo(BaseModel):
 
 
 class GoogleOAuthService:
-    """Service for Google OAuth operations."""
+    """Service for Google OAuth 2.0 authentication."""
 
     def __init__(self):
-        """Initialize with OAuth credentials from settings."""
         self.client_id = settings.GOOGLE_OAUTH_CLIENT_ID
         self.client_secret = settings.GOOGLE_OAUTH_CLIENT_SECRET
         self.redirect_uri = settings.GOOGLE_OAUTH_REDIRECT_URI
-        self.auth_url = "https://accounts.google.com/o/oauth2/v2/auth"
         self.token_url = "https://oauth2.googleapis.com/token"
+        self.auth_url = "https://accounts.google.com/o/oauth2/v2/auth"
         self.userinfo_url = "https://www.googleapis.com/oauth2/v3/userinfo"
-        self.scopes = "openid email profile"
 
     def get_authorization_url(self) -> str:
-        """Get Google OAuth authorization URL."""
+        """Generate Google OAuth authorization URL."""
         params = {
             "client_id": self.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": "code",
-            "scope": self.scopes,
+            "scope": "openid email profile",
             "access_type": "offline",
             "prompt": "consent",
         }
         return f"{self.auth_url}?{urlencode(params)}"
 
     async def get_user_info(self, code: str) -> GoogleUserInfo:
-        """Exchange authorization code for user info."""
+        """Exchange authorization code for user information."""
         async with httpx.AsyncClient() as client:
             # Exchange code for access token
             token_response = await client.post(
@@ -1165,47 +1181,39 @@ class GoogleOAuthService:
             token_response.raise_for_status()
             tokens = token_response.json()
 
-            access_token = tokens.get("access_token")
-            if not access_token:
-                raise ValueError("Failed to retrieve access token from Google")
-
-            # Fetch user info using access token
+            # Get user info with access token
             userinfo_response = await client.get(
                 self.userinfo_url,
-                headers={"Authorization": f"Bearer {access_token}"},
+                headers={"Authorization": f"Bearer {tokens['access_token']}"},
             )
             userinfo_response.raise_for_status()
-            user_info = userinfo_response.json()
-
-            # Extract and validate user data
-            email = user_info.get("email")
-            avatar_url = user_info.get("picture")
-            full_name = user_info.get("name", email.split("@")[0])
-            if not email or not full_name:
-                raise ValueError("Failed to retrieve user information from Google")
+            userinfo = userinfo_response.json()
 
             return GoogleUserInfo(
-                email=email,
-                full_name=full_name,
-                avatar_url=avatar_url,
+                email=userinfo["email"],
+                full_name=userinfo["name"],
+                avatar_url=userinfo.get("picture"),
             )
 
 
-# Global instance
+# Global instance (singleton pattern)
 google_oauth_service = GoogleOAuthService()
 ```
 
-**Usage in Module** (`backend/modules/user/api.py`):
+### Usage in Modules
+
+**In API Layer** (`backend/modules/user/api.py`):
 
 ```python
-from fastapi.responses import RedirectResponse
 from backend.services.google_oauth import google_oauth_service
+
 
 @router.get("/google-auth")
 async def google_auth():
     """Initiate Google OAuth flow."""
     auth_url = google_oauth_service.get_authorization_url()
     return RedirectResponse(auth_url)
+
 
 @router.post("/google-auth/callback", response_model=Auth)
 async def google_auth_callback(
@@ -1217,7 +1225,7 @@ async def google_auth_callback(
     # Get user info from Google
     user_info = await google_oauth_service.get_user_info(data.code)
 
-    # Check if user exists, create if not
+    # Continue for existing user, create new user otherwise
     user = user_service.get_by_email(session, user_info.email)
     if not user:
         user = user_service.create_oauth(
@@ -1226,26 +1234,53 @@ async def google_auth_callback(
             full_name=user_info.full_name,
             auth_provider="google",
         )
-        # Send welcome email
-        background_tasks.add_task(send_welcome_email_task, ...)
+        two_fa_service.create(session, user.id)
+        background_tasks.add_task(
+            send_welcome_email_task,
+            email=user.email,
+            name=user.full_name,
+        )
 
-    # Generate JWT token
     access_token = create_access_token(user.id)
-
-    # Commit
     session.commit()
 
     return Auth(access_token=access_token, user=user_to_public(user))
 ```
 
-**Key Points:**
+### Key Points
 
-- Shared services don't interact with database directly
-- Return typed models (Pydantic) for clear contracts
-- Configuration from `settings` (environment variables)
-- Async methods for external API calls
-- Raise `ValueError` for errors (or create custom exceptions)
-- Global singleton instance pattern
+- **Typed Models**: Use Pydantic models for return values (`GoogleUserInfo`)
+- **Stateless**: No database operations, no session management
+- **Configuration**: Load settings from `backend.core.config`
+- **Async**: Use `async`/`await` for external API calls
+- **Singleton**: Global instance at module level
+- **Clean Separation**: Service handles external API, modules handle business logic
+- **Error Handling**: Let exceptions bubble up to module layer
+
+### When to Create Shared Services
+
+Create a shared service when:
+
+1. **Multiple modules need it** - Used by 2+ feature modules
+2. **External integration** - Third-party APIs (OAuth, payments, etc.)
+3. **Stateless operations** - No database access required
+4. **Reusable utility** - Generic functionality across features
+
+**Don't create shared service when:**
+
+- ❌ Only one module uses it (keep in module)
+- ❌ It needs database access (use module service layer)
+- ❌ It's business logic for specific feature (belongs in module)
+
+### Directory Structure
+
+```
+backend/services/
+├── __init__.py
+├── google_oauth.py    # Google OAuth integration
+├── stripe.py          # Payment processing (example)
+└── email_sender.py    # Email service wrapper (example)
+```
 
 ---
 
@@ -1482,4 +1517,4 @@ def check():
 ---
 
 **Last Updated**: 2025-10-17
-**Source**: Comprehensive analysis of Sample codebase
+**Source**: Comprehensive analysis of Sample AI codebase

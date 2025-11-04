@@ -1,4 +1,4 @@
-# Sample App Frontend - Perfect Code Structure
+# Sample AI Frontend - Perfect Code Structure
 
 ## 🎯 **Optimal File Organization**
 

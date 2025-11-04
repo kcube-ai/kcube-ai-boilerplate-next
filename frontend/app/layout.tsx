@@ -25,8 +25,10 @@ const authenticatedRoutes = [
   "/verify-signup",
   "/verify-2fa",
   "/dashboard",
+  "/chat",
   "/settings",
   "/documents",
+  "/integrations",
 ];
 
 const AuthChecker = ({ children }: { children: React.ReactNode }) => {

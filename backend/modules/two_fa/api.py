@@ -12,7 +12,7 @@ from backend.core.rate_limit import rate_limit
 from backend.core.validation import is_valid_totp
 from backend.models import UserPublic
 from backend.modules.two_fa.two_fa import two_fa_service
-from backend.modules.user.lib import user_to_public
+from backend.modules.user import user_service
 
 from .exceptions import InvalidTotpCode
 
@@ -82,7 +82,7 @@ def verify_code(
 
     return Auth(
         access_token=access_token,
-        user=user_to_public(current_user, pending_2fa=False),
+        user=user_service.to_public(current_user, pending_2fa=False),
     )
 
 

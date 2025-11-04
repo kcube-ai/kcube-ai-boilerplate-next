@@ -1,13 +1,15 @@
-# Sample - Complete Architecture & Development Guide
+# Sample AI - Complete Architecture & Development Guide
 
 ## Project Overview
 
-**Sample** is a full-stack web application combining:
+**Sample AI** is a full-stack web application combining:
+
 - **Backend**: FastAPI (Python) with modular architecture, SQLModel ORM, PostgreSQL
 - **Frontend**: Next.js 15 with TypeScript, React 19, Tailwind CSS, shadcn/ui
 - **Infrastructure**: Docker, Redis (rate limiting), SendGrid (emails)
 
 **Tech Stack**:
+
 - Python 3.11 + FastAPI 0.115
 - TypeScript + React 19 + Next.js 15
 - PostgreSQL 13+ + SQLModel
@@ -21,6 +23,7 @@
 ## Quick Start Commands
 
 ### Backend Setup
+
 ```bash
 # Activate virtual environment (uses venv/ at project root)
 source venv/bin/activate
@@ -42,6 +45,7 @@ alembic upgrade head
 ```
 
 ### Frontend Setup
+
 ```bash
 # Install frontend dependencies
 cd frontend && pnpm install
@@ -61,6 +65,7 @@ pnpm lint
 ```
 
 ### Code Quality & Formatting
+
 ```bash
 # Format ALL Python code (MUST run after EVERY change)
 ./venv/bin/isort backend/ --profile black
@@ -71,6 +76,7 @@ cd frontend && pnpm lint
 ```
 
 ### Database Migrations
+
 ```bash
 # Create new migration from model changes
 alembic revision --autogenerate -m "Description of changes"
@@ -86,6 +92,7 @@ alembic history
 ```
 
 ### Testing
+
 ```bash
 # Run Python tests
 ./venv/bin/pytest
@@ -98,24 +105,26 @@ alembic history
 ```
 
 ### Docker Deployment
+
 ```bash
 # Build Docker image
-docker build -t sample:latest .
+docker build -t sample-ai:latest .
 
 # Run Docker container
 docker run -d -p 8000:8000 \
   -e POSTGRES_SERVER=db \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_USER=postgres \
-  -e POSTGRES_DB=sample_db \
+  -e POSTGRES_DB=medial_db \
   -e REDIS_URL=redis://redis:6379/0 \
-  sample:latest
+  sample-ai:latest
 
 # Docker compose (if available)
 docker-compose up
 ```
 
 ### Verification Commands
+
 ```bash
 # Check backend config loads correctly
 ./venv/bin/python -c "from backend.core.config import settings; print('✓ Config OK')"
@@ -135,7 +144,7 @@ find . -type d -name __pycache__ -exec rm -r {} + 2>/dev/null || true
 ## Directory Structure
 
 ```
-sample-next-fast-api/
+sample-ai/
 ├── backend/                    # FastAPI application
 │   ├── core/                   # Core utilities
 │   │   ├── config.py           # Settings (environment variables)
@@ -152,8 +161,6 @@ sample-next-fast-api/
 │   │   └── validation.py       # Input validation utilities
 │   ├── api/
 │   │   └── deps.py             # Dependency injection (SessionDep, CurrentUserDep, etc)
-│   ├── services/               # Shared services (OAuth, external APIs)
-│   │   └── google_oauth.py     # Google OAuth service
 │   ├── models.py               # SQLModel database tables
 │   ├── modules/                # Feature modules
 │   │   ├── registry.py         # Module registration system
@@ -180,7 +187,6 @@ sample-next-fast-api/
 │   │   ├── login/              # Login page
 │   │   ├── signup/             # Signup page
 │   │   ├── verify-signup/      # Email verification page
-│   │   ├── google-oauth-redirect/  # Google OAuth callback page
 │   │   ├── dashboard/          # Dashboard page (auth required)
 │   │   └── settings/           # Settings page (auth required)
 │   ├── components/             # React components
@@ -255,6 +261,7 @@ sample-next-fast-api/
 ### Module System
 
 Each module follows this structure:
+
 - **api.py** - FastAPI endpoints, request/response models, validation
 - **user.py** (service) - Business logic, exceptions, session.flush()
 - **db.py** - Repository pattern, CRUD operations, session.flush()
@@ -264,6 +271,7 @@ Each module follows this structure:
 - **email.py** - Email template rendering (optional)
 
 Modules are registered in `backend/modules/registry.py` with:
+
 - Name
 - Router (lazy-loaded)
 - URL prefix
@@ -272,12 +280,14 @@ Modules are registered in `backend/modules/registry.py` with:
 ### Authentication & Authorization
 
 **Dependencies** (from `backend/api/deps.py`):
+
 - `SessionDep` - Database session
 - `CurrentUserDep` - Verified user only
 - `CurrentUserAllowUnverifiedDep` - Verified OR unverified users
 - `CurrentAdminDep` - Admin users only
 
 **Flow**:
+
 1. User signs up → Email with 6-digit code
 2. User verifies email → Signup complete
 3. User logs in → JWT token (with optional pending_2fa flag)
@@ -295,10 +305,12 @@ def signup(...):
 ```
 
 **Identifier Strategy**:
+
 - **Authenticated**: Limited by user ID (from JWT token)
 - **Unauthenticated**: Limited by IP address (respects X-Forwarded-For)
 
 **Configuration** in `.env`:
+
 ```bash
 REDIS_URL=redis://localhost:6379/0  # Local dev
 REDIS_URL=redis://host:6380/0?ssl=True  # Azure production
@@ -313,6 +325,7 @@ REDIS_URL=redis://host:6380/0?ssl=True  # Azure production
 **Location**: `/frontend/DESIGN_SYSTEM.md`
 
 **Key Principles**:
+
 - Use constants from `/frontend/constants/ui.ts`
 - Colors: `sample-blue` and `sample-gray` palettes only
 - Sections: `py-16 lg:py-20` for padding
@@ -322,6 +335,7 @@ REDIS_URL=redis://host:6380/0?ssl=True  # Azure production
 ### File Organization Rules
 
 **lib/** - Pure functions by PURPOSE (no React):
+
 - `auth.ts` - Authentication helpers
 - `token.ts` - Token management (auto-syncs with OpenAPI.TOKEN)
 - `error.ts` - Error handling & API responses
@@ -332,10 +346,12 @@ REDIS_URL=redis://host:6380/0?ssl=True  # Azure production
 **hooks/** - Custom React hooks only
 
 **components/** - React components only
+
 - `auth/` - Authentication components
 - `ui/` - shadcn/ui components
 
 **config/** - Application configuration
+
 - `app.ts` - App name, version, URLs
 - `api.ts` - OpenAPI client setup
 
@@ -347,9 +363,9 @@ REDIS_URL=redis://host:6380/0?ssl=True  # Azure production
 
 ```typescript
 // lib/token.ts
-saveToken(token);      // Stores + updates OpenAPI.TOKEN
-clearToken();          // Removes + clears OpenAPI.TOKEN
-getToken();            // Returns current token
+saveToken(token); // Stores + updates OpenAPI.TOKEN
+clearToken(); // Removes + clears OpenAPI.TOKEN
+getToken(); // Returns current token
 
 // Automatically used in:
 // - API requests (OpenAPI client)
@@ -367,7 +383,7 @@ import { handleError } from "@/lib/error";
 try {
   await UsersService.login({ requestBody: { email, password } });
 } catch (error) {
-  handleError(error);  // Handles automatically:
+  handleError(error); // Handles automatically:
   // - 401/403: Clear token + redirect to /login
   // - 429: Show rate limit message
   // - Other: Show API error message
@@ -377,6 +393,7 @@ try {
 ### Authentication Routes
 
 In `app/layout.tsx`:
+
 - **Guest routes** (`/login`, `/signup`) → Redirect to dashboard if logged in
 - **Authenticated routes** (`/dashboard`, `/settings`) → Require login
 - **Public routes** → Accessible to all
@@ -392,6 +409,7 @@ When making ANY architectural, structural, or significant feature changes, you M
 ### Documentation Files to Maintain
 
 1. **ARCHITECTURE.md** - Update when changing:
+
    - Layered architecture patterns (API/Service/DB/Model layers)
    - Session management approach
    - Exception handling patterns
@@ -402,6 +420,7 @@ When making ANY architectural, structural, or significant feature changes, you M
    - Any core architectural decisions
 
 2. **CLAUDE.md** (this file) - Update when changing:
+
    - Commands for build, lint, test, deploy
    - Directory structure
    - Module organization
@@ -411,6 +430,7 @@ When making ANY architectural, structural, or significant feature changes, you M
    - Dependencies (requirements.txt, package.json)
 
 3. **README.md** - Update when changing:
+
    - Features list
    - Tech stack
    - Quick start instructions
@@ -428,6 +448,7 @@ When making ANY architectural, structural, or significant feature changes, you M
 ### When to Update Documentation
 
 ✅ **ALWAYS update immediately after:**
+
 - Adding/removing a module
 - Changing layered architecture patterns
 - Modifying session management rules
@@ -468,6 +489,7 @@ When making code changes, ask yourself:
 ### Python Code Standards
 
 1. **Docstrings (MANDATORY)** - Every module needs one:
+
    ```python
    """
    Brief description.
@@ -476,20 +498,22 @@ When making code changes, ask yourself:
    ```
 
 2. **Format Code (AFTER EVERY CHANGE)**:
+
    ```bash
    ./venv/bin/isort backend/ --profile black
    ./venv/bin/black backend/
    ```
 
 3. **Import Order**:
+
    ```python
    # Standard library
    import os
    from datetime import datetime
-   
+
    # Third-party
    from fastapi import APIRouter
-   
+
    # Local
    from backend.core.config import settings
    ```
@@ -498,13 +522,14 @@ When making code changes, ask yourself:
 
 **Golden Rule: One session per request, one commit per request**
 
-| Layer | Allowed | NOT Allowed |
-|-------|---------|-------------|
-| **DB** | `session.add()`, `session.flush()` | ❌ `session.commit()` |
-| **Service** | `session.flush()` | ❌ `session.commit()` |
-| **API** | `session.commit()` (once at END) | ❌ Multiple commits |
+| Layer       | Allowed                            | NOT Allowed           |
+| ----------- | ---------------------------------- | --------------------- |
+| **DB**      | `session.add()`, `session.flush()` | ❌ `session.commit()` |
+| **Service** | `session.flush()`                  | ❌ `session.commit()` |
+| **API**     | `session.commit()` (once at END)   | ❌ Multiple commits   |
 
 Example:
+
 ```python
 # DB Layer - NEVER commit
 def create(self, session: Session, **kwargs) -> User:
@@ -576,6 +601,7 @@ created_at = datetime.now(timezone.utc)  # Redundant
 ### Naming Conventions
 
 **Repository/Service Methods** - No resource prefix in class:
+
 ```python
 # ✓ CORRECT
 class UserService:
@@ -591,6 +617,7 @@ class UserService:
 ```
 
 **API Endpoints** - Simple action names:
+
 ```python
 # ✓ CORRECT
 @router.post("/signup")
@@ -605,6 +632,7 @@ def user_signup_endpoint(data: SignupRequest): ...  # Redundant!
 ```
 
 **Response Models** - NO "Response" suffix:
+
 ```python
 # ✓ CORRECT
 class Auth(BaseModel):
@@ -627,7 +655,7 @@ class AuthResponse(BaseModel):  # Redundant suffix
 
 ```bash
 # Application
-APP_NAME=Sample
+APP_NAME=Sample AI
 APP_VERSION=1.0.0
 APP_PUBLIC_URL=http://localhost:3000
 ENABLE_USER_EMAILS=true
@@ -651,7 +679,7 @@ SENDGRID_FROM_EMAIL=noreply@example.com
 SENDGRID_VERIFY_SSL=true
 
 # PostgreSQL
-POSTGRES_DB=sample_db
+POSTGRES_DB=medial_db
 POSTGRES_USER=postgres
 POSTGRES_PORT=5432
 POSTGRES_SERVER=localhost
@@ -659,26 +687,14 @@ POSTGRES_PASSWORD=your-password
 
 # Redis (required for rate limiting)
 REDIS_URL=redis://localhost:6379/0
-
-# Google OAuth (optional, for social login)
-GOOGLE_OAUTH_CLIENT_ID=your-client-id
-GOOGLE_OAUTH_CLIENT_SECRET=your-client-secret
-GOOGLE_OAUTH_REDIRECT_URI=http://localhost:8000/google-oauth-redirect
 ```
-
-**Google OAuth Setup** (optional):
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a project or select existing
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials (Web application)
-5. Add authorized redirect URI: `http://localhost:8000/google-oauth-redirect`
-6. Copy Client ID and Client Secret to `.env`
 
 ---
 
 ## Git Workflow
 
 ### Branch Naming
+
 ```
 feature/user-authentication
 fix/signup-validation
@@ -707,13 +723,38 @@ git commit -m "Add user authentication with JWT tokens"
 git push origin feature/user-authentication
 ```
 
+### Commit Message Guidelines
+
+**CRITICAL: Commit messages should be clean and professional**
+
+❌ **NEVER include:**
+
+- References to Claude, Claude Code, or AI assistance
+- "Co-Authored-By: Claude" or similar attribution
+- Emojis (like 🤖) unless explicitly part of project style
+- Links to Claude.com or Anthropic
+
+**Examples:**
+
+❌ Bad:
+
+```
+Add Xero OAuth integration
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
 ### Pre-commit Checklist
+
 - [ ] Run `isort` + `black` on all Python changes
 - [ ] Run `pnpm lint` on frontend changes
 - [ ] Update relevant documentation
 - [ ] All tests passing (`pytest`)
 - [ ] No hardcoded values (use environment variables)
 - [ ] Following naming conventions
+- [ ] Commit message is clean (no AI references)
 
 ---
 
@@ -722,12 +763,14 @@ git push origin feature/user-authentication
 ### Adding a New Feature
 
 1. **Create module structure**:
+
    ```bash
    mkdir backend/modules/my_feature
    touch backend/modules/my_feature/{__init__.py,api.py,db.py,my_feature.py,exceptions.py}
    ```
 
 2. **Define models** (in `backend/models.py`):
+
    ```python
    class MyModel(SQLModel, table=True):
        id: UUID = Field(default_factory=uuid4, primary_key=True)
@@ -735,27 +778,32 @@ git push origin feature/user-authentication
    ```
 
 3. **Create migration**:
+
    ```bash
    alembic revision --autogenerate -m "Add my_feature table"
    alembic upgrade head
    ```
 
 4. **Implement DB layer** (`db.py`):
+
    - Simple CRUD operations
    - Only `session.flush()`, never `session.commit()`
    - Return types: object or None
 
 5. **Implement Service layer** (`my_feature.py`):
+
    - Business logic
    - Exception handling
    - Only `session.flush()`, never `session.commit()`
 
 6. **Implement API layer** (`api.py`):
+
    - FastAPI endpoints
    - Request/response models
    - Single `session.commit()` at END
 
 7. **Register module** (`backend/modules/registry.py`):
+
    ```python
    ModuleConfig(
        name="my_feature",
@@ -790,11 +838,13 @@ SQLALCHEMY_ECHO = True
 ## API Documentation
 
 **Auto-generated from FastAPI**:
+
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 - OpenAPI JSON: http://localhost:8000/openapi.json
 
 **Generate frontend client**:
+
 ```bash
 cd frontend
 pnpm generate-client
@@ -808,22 +858,25 @@ pnpm generate-client
 ### Docker Deployment
 
 **Build image**:
+
 ```bash
-docker build -t sample:latest .
+docker build -t sample-ai:latest .
 ```
 
 **Run container**:
+
 ```bash
 docker run -d -p 8000:8000 \
   -e POSTGRES_SERVER=db \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_USER=postgres \
-  -e POSTGRES_DB=sample_db \
+  -e POSTGRES_DB=medial_db \
   -e REDIS_URL=redis://redis:6379/0 \
-  sample:latest
+  sample-ai:latest
 ```
 
 **Environment variables** (required):
+
 - All from `.env.example`
 - REDIS_URL must be configured
 - JWT_SECRET_KEY must be strong
@@ -861,7 +914,6 @@ Black 25.9.0 (code formatting)
 isort 6.0.1 (import sorting)
 Jinja2 3.1.6 (email templates)
 pyotp 2.9.0 (2FA TOTP)
-httpx 0.28.1 (async HTTP client for OAuth)
 ```
 
 ### Frontend (`package.json`)
@@ -897,6 +949,7 @@ These directories are legacy or deprecated:
 ## Performance Tips
 
 ### Database
+
 - Use eager loading for relationships:
   ```python
   from sqlalchemy.orm import selectinload
@@ -906,11 +959,13 @@ These directories are legacy or deprecated:
 - Index frequently queried columns
 
 ### Rate Limiting
+
 - Use Redis for distributed rate limiting
 - Adjust limits based on security vs usability
 - Monitor rate limit violations
 
 ### Frontend
+
 - Use React Query for caching
 - Lazy load components with dynamic imports
 - Minimize bundle size (check with `next build`)
@@ -923,11 +978,13 @@ These directories are legacy or deprecated:
 ### Backend issues
 
 **Config errors**:
+
 ```bash
 ./venv/bin/python -c "from backend.core.config import settings; print('OK')"
 ```
 
 **Database errors**:
+
 ```bash
 # Check connection
 ./venv/bin/python -c "from backend.core.database import get_db; print('OK')"
@@ -937,6 +994,7 @@ alembic downgrade -1
 ```
 
 **Redis errors**:
+
 ```bash
 # Check Redis is running
 docker ps | grep redis
@@ -949,12 +1007,14 @@ docker run -d --name redis -p 6379:6379 redis:alpine
 ### Frontend issues
 
 **Client not generated**:
+
 ```bash
 cd frontend
 pnpm generate-client
 ```
 
 **Node modules corrupted**:
+
 ```bash
 cd frontend
 rm -rf node_modules pnpm-lock.yaml
@@ -964,11 +1024,13 @@ pnpm install
 ### Docker issues
 
 **Container exits**:
+
 ```bash
 docker logs container_id
 ```
 
 **Port already in use**:
+
 ```bash
 # Find process using port 8000
 lsof -i :8000
@@ -1028,5 +1090,5 @@ kill -9 process_id
 **Last Updated**: 2025-10-17
 **Source**: Comprehensive codebase analysis
 
-This is the central documentation for all Sample development.
+This is the central documentation for all Sample AI development.
 Maintain these standards for consistency, maintainability, and scalability.

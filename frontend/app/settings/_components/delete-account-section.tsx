@@ -50,27 +50,26 @@ export function DeleteAccountSection() {
   };
 
   return (
-    <div className="bg-card border border-destructive rounded-lg p-6">
-      <div className="flex items-center justify-between gap-6">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-destructive mb-1">
+    <div className="bg-card border border-destructive rounded-lg p-6 flex items-center justify-between gap-6">
+      <div className="flex-1">
+        <h3 className="text-lg font-semibold text-destructive mb-1">
+          Delete Account
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          Permanently delete your account and all associated data. This action
+          cannot be undone.
+        </p>
+      </div>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="destructive"
+            className="px-4 py-2 text-sm flex-shrink-0"
+            disabled={isDeleting}
+          >
             Delete Account
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            Permanently delete your account and all associated data. This action
-            cannot be undone.
-          </p>
-        </div>
-        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="destructive"
-              className="px-4 py-2 text-sm flex-shrink-0"
-              disabled={isDeleting}
-            >
-              Delete Account
-            </Button>
-          </AlertDialogTrigger>
+          </Button>
+        </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -90,8 +89,7 @@ export function DeleteAccountSection() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-        </AlertDialog>
-      </div>
+      </AlertDialog>
     </div>
   );
 }

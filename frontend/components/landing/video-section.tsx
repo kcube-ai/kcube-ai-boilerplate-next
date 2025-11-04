@@ -8,7 +8,7 @@ export function VideoSection() {
           className={`aspect-video bg-muted border border-border ${DIMENSIONS.RADIUS_FILE_DROP} overflow-hidden shadow-sample`}
         >
           <video controls className="w-full h-full object-cover">
-            <source src="/video/sample_video.mp4" type="video/mp4" />
+            <source src="/video/medial_video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>

@@ -14,17 +14,17 @@ export default function SettingsPage() {
   usePageTitle(`Settings - ${APP_NAME}`);
   return (
     <DashboardLayout>
-      <div className="space-y-8 max-w-4xl">
+      <div className="w-full max-w-[1400px] space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+          <p className="text-muted-foreground mt-1">
             Manage your account settings and preferences
           </p>
         </div>
         <ProfileHeaderSection />
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
-            <h2 className="text-xl font-semibold text-foreground">Security</h2>
+            <h2 className="text-lg font-semibold text-foreground">Security</h2>
             <p className="text-sm text-muted-foreground mt-1">
               Manage your security settings and authentication methods
             </p>
@@ -32,9 +32,9 @@ export default function SettingsPage() {
           <TwoFactorSection />
           <PasswordSection />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="text-lg font-semibold text-foreground">
               Preferences
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
@@ -43,17 +43,7 @@ export default function SettingsPage() {
           </div>
           <ThemeSection />
         </div>
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-xl font-semibold text-destructive">
-              Danger Zone
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              Irreversible actions that affect your account
-            </p>
-          </div>
-          <DeleteAccountSection />
-        </div>
+        <DeleteAccountSection />
       </div>
     </DashboardLayout>
   );

@@ -3,6 +3,6 @@ User module providing user management functionality.
 Handles user registration, authentication, and profile operations.
 """
 
-from .user import UserService
+from .user import user_service
 
-__all__ = ["UserService"]
+__all__ = ["user_service"]

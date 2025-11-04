@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Home, LogOut, Settings, X } from "lucide-react";
+import {
+  FileText,
+  Home,
+  LogOut,
+  Settings,
+  X,
+  Puzzle,
+  MessageCircle,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/user-context";
@@ -11,6 +19,9 @@ import { clearToken } from "@/lib/token";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
+  { name: "Chat", href: "/chat", icon: MessageCircle },
+  { name: "Documents", href: "/documents", icon: FileText },
+  { name: "Integrations", href: "/integrations", icon: Puzzle },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 

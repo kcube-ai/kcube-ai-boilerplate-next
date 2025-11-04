@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { APP_NAME } from "@/config/app";
 import { COMPONENT_CLASSES, LANDING_STYLES } from "@/constants/ui";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +52,10 @@ export function Navigation() {
               <Link href="#faqs" className={LANDING_STYLES.NAV_LINK}>
                 FAQs
               </Link>
-              <Link href="/support#book-demo" className={LANDING_STYLES.NAV_LINK}>
+              <Link
+                href="/support#book-demo"
+                className={LANDING_STYLES.NAV_LINK}
+              >
                 Book a Demo
               </Link>
               <Link href="/support" className={LANDING_STYLES.NAV_LINK}>
@@ -62,6 +66,7 @@ export function Navigation() {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Link href="/signup">
               <Button className={COMPONENT_CLASSES.BUTTON_PRIMARY}>
                 Start free trial
@@ -88,12 +93,16 @@ export function Navigation() {
               <div className="relative w-5 h-5">
                 <Menu
                   className={`absolute inset-0 h-5 w-5 transform transition-all duration-300 ${
-                    isOpen ? "rotate-180 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
+                    isOpen
+                      ? "rotate-180 scale-0 opacity-0"
+                      : "rotate-0 scale-100 opacity-100"
                   }`}
                 />
                 <X
                   className={`absolute inset-0 h-5 w-5 transform transition-all duration-300 ${
-                    isOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-180 scale-0 opacity-0"
+                    isOpen
+                      ? "rotate-0 scale-100 opacity-100"
+                      : "-rotate-180 scale-0 opacity-0"
                   }`}
                 />
               </div>
@@ -112,11 +121,23 @@ export function Navigation() {
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`fixed top-14 right-0 w-full sm:w-80 h-[calc(100vh-3.5rem)] bg-background border-l border-border z-50 md:hidden transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 w-full sm:w-80 h-screen bg-background border-l border-border z-50 md:hidden transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full">
+          {/* Close button - aligned with hamburger position */}
+          <div className="flex items-center justify-end h-14 px-4 border-b border-border">
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
           <div className="flex-1 overflow-y-auto">
             <div className="px-4 pt-6 pb-3 space-y-1">
               <Link
@@ -152,14 +173,26 @@ export function Navigation() {
 
           <div className="p-4 border-t border-border">
             <div className="flex flex-col gap-3">
-              <Link href="/signup" onClick={() => setIsOpen(false)} className="block">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
+              <Link
+                href="/signup"
+                onClick={() => setIsOpen(false)}
+                className="block"
+              >
                 <Button
                   className={`${COMPONENT_CLASSES.BUTTON_PRIMARY} w-full`}
                 >
                   Start free trial
                 </Button>
               </Link>
-              <Link href="/login" onClick={() => setIsOpen(false)} className="block">
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="block"
+              >
                 <Button
                   variant="outline"
                   className={`${COMPONENT_CLASSES.BUTTON_SECONDARY} w-full`}

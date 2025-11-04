@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { CreateApiV1BookDemoPostData, CreateApiV1BookDemoPostResponse, ServeIconIconPngGetResponse, ServeAppleIconAppleIconPngGetResponse, ServeFaviconIcoFaviconIcoGetResponse, ServeLogoPngLogoPngGetResponse, ServeLogoSvgLogoSvgGetResponse, ServeVideoVideoFilePathGetData, ServeVideoVideoFilePathGetResponse, ServeImagesImagesFilePathGetData, ServeImagesImagesFilePathGetResponse, ServeFrontendPathGetData, ServeFrontendPathGetResponse, RequestApiV1ForgotPasswordPostData, RequestApiV1ForgotPasswordPostResponse, VerifyApiV1ForgotPasswordVerifyPostData, VerifyApiV1ForgotPasswordVerifyPostResponse, CheckApiV1HealthGetResponse, SetupApiV1TwoFaSetupGetResponse, VerifyApiV1TwoFaVerifyPostData, VerifyApiV1TwoFaVerifyPostResponse, VerifyCodeApiV1TwoFaVerifyCodePostData, VerifyCodeApiV1TwoFaVerifyCodePostResponse, DisableApiV1TwoFaDisablePostResponse, SignupApiV1UserSignupPostData, SignupApiV1UserSignupPostResponse, ResendVerificationApiV1UserResendVerificationPostResponse, VerifySignupApiV1UserVerifySignupPostData, VerifySignupApiV1UserVerifySignupPostResponse, LoginApiV1UserLoginPostData, LoginApiV1UserLoginPostResponse, GetMeApiV1UserMeGetResponse, UpdateApiV1UserPutData, UpdateApiV1UserPutResponse, DeleteApiV1UserDeleteResponse, ChangePasswordApiV1UserChangePasswordPostData, ChangePasswordApiV1UserChangePasswordPostResponse, UpdateProfilePictureApiV1UserProfilePicturePostData, UpdateProfilePictureApiV1UserProfilePicturePostResponse, RemoveProfilePictureApiV1UserProfilePictureDeleteResponse, GoogleAuthApiV1UserGoogleAuthGetResponse, GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostData, GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostResponse } from './types.gen';
+import type { CreateApiV1BookDemoPostData, CreateApiV1BookDemoPostResponse, CreateApiV1ChatPostData, CreateApiV1ChatPostResponse, GetListApiV1ChatListGetData, GetListApiV1ChatListGetResponse, GetApiV1ChatChatIdGetData, GetApiV1ChatChatIdGetResponse, UpdateApiV1ChatChatIdPutData, UpdateApiV1ChatChatIdPutResponse, DeleteApiV1ChatChatIdDeleteData, DeleteApiV1ChatChatIdDeleteResponse, ServeIconIconPngGetResponse, ServeAppleIconAppleIconPngGetResponse, ServeFaviconIcoFaviconIcoGetResponse, ServeLogoPngLogoPngGetResponse, ServeLogoSvgLogoSvgGetResponse, ServeVideoVideoFilePathGetData, ServeVideoVideoFilePathGetResponse, ServeImagesImagesFilePathGetData, ServeImagesImagesFilePathGetResponse, ServeFrontendPathGetData, ServeFrontendPathGetResponse, UploadApiV1DocumentPostData, UploadApiV1DocumentPostResponse, DeleteApiV1DocumentDeleteData, DeleteApiV1DocumentDeleteResponse, GetAllApiV1DocumentAllGetResponse, RequestApiV1ForgotPasswordPostData, RequestApiV1ForgotPasswordPostResponse, VerifyApiV1ForgotPasswordVerifyPostData, VerifyApiV1ForgotPasswordVerifyPostResponse, CheckApiV1HealthGetResponse, PostMessageApiV1MessagePostData, PostMessageApiV1MessagePostResponse, SetupApiV1TwoFaSetupGetResponse, VerifyApiV1TwoFaVerifyPostData, VerifyApiV1TwoFaVerifyPostResponse, VerifyCodeApiV1TwoFaVerifyCodePostData, VerifyCodeApiV1TwoFaVerifyCodePostResponse, DisableApiV1TwoFaDisablePostResponse, SignupApiV1UserSignupPostData, SignupApiV1UserSignupPostResponse, ResendVerificationApiV1UserResendVerificationPostResponse, VerifySignupApiV1UserVerifySignupPostData, VerifySignupApiV1UserVerifySignupPostResponse, LoginApiV1UserLoginPostData, LoginApiV1UserLoginPostResponse, GetMeApiV1UserMeGetResponse, UpdateApiV1UserPutData, UpdateApiV1UserPutResponse, DeleteApiV1UserDeleteResponse, ChangePasswordApiV1UserChangePasswordPostData, ChangePasswordApiV1UserChangePasswordPostResponse, SetPasswordApiV1UserSetPasswordPostData, SetPasswordApiV1UserSetPasswordPostResponse, UpdateProfilePictureApiV1UserProfilePicturePostData, UpdateProfilePictureApiV1UserProfilePicturePostResponse, RemoveProfilePictureApiV1UserProfilePictureDeleteResponse, GoogleLoginApiV1UserGoogleLoginGetResponse, GoogleLoginCallbackApiV1UserGoogleLoginCallbackPostData, GoogleLoginCallbackApiV1UserGoogleLoginCallbackPostResponse, XeroLoginApiV1XeroLoginGetResponse, XeroLoginCallbackApiV1XeroLoginCallbackPostData, XeroLoginCallbackApiV1XeroLoginCallbackPostResponse, GetListApiV1XeroOrganizationListGetResponse, ConnectApiV1XeroOrganizationConnectGetResponse, ConnectCallbackApiV1XeroOrganizationConnectCallbackPostData, ConnectCallbackApiV1XeroOrganizationConnectCallbackPostResponse } from './types.gen';
 
 export class BookDemoService {
     /**
@@ -11,7 +11,7 @@ export class BookDemoService {
      * Submit a new demo request.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns Message Successful Response
+     * @returns backend__modules__book_demo__api__Message Successful Response
      * @throws ApiError
      */
     public static createApiV1BookDemoPost(data: CreateApiV1BookDemoPostData): CancelablePromise<CreateApiV1BookDemoPostResponse> {
@@ -20,6 +20,120 @@ export class BookDemoService {
             url: '/api/v1/book-demo/',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+}
+
+export class ChatService {
+    /**
+     * Create
+     * Create a new chat.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns ChatPublic Successful Response
+     * @throws ApiError
+     */
+    public static createApiV1ChatPost(data: CreateApiV1ChatPostData): CancelablePromise<CreateApiV1ChatPostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/chat/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get List
+     * Get list of chats for the current user.
+     * @param data The data for the request.
+     * @param data.limit
+     * @returns ChatPublic Successful Response
+     * @throws ApiError
+     */
+    public static getListApiV1ChatListGet(data: GetListApiV1ChatListGetData = {}): CancelablePromise<GetListApiV1ChatListGetResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/chat/list',
+            query: {
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get
+     * Get a chat by ID with messages (sorted by created_at ascending).
+     * @param data The data for the request.
+     * @param data.chatId
+     * @param data.maxMessages
+     * @returns ChatWithMessages Successful Response
+     * @throws ApiError
+     */
+    public static getApiV1ChatChatIdGet(data: GetApiV1ChatChatIdGetData): CancelablePromise<GetApiV1ChatChatIdGetResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/chat/{chat_id}',
+            path: {
+                chat_id: data.chatId
+            },
+            query: {
+                max_messages: data.maxMessages
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update
+     * Update a chat title.
+     * @param data The data for the request.
+     * @param data.chatId
+     * @param data.requestBody
+     * @returns ChatPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateApiV1ChatChatIdPut(data: UpdateApiV1ChatChatIdPutData): CancelablePromise<UpdateApiV1ChatChatIdPutResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/chat/{chat_id}',
+            path: {
+                chat_id: data.chatId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete
+     * Delete a chat.
+     * @param data The data for the request.
+     * @param data.chatId
+     * @returns backend__models__Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteApiV1ChatChatIdDelete(data: DeleteApiV1ChatChatIdDeleteData): CancelablePromise<DeleteApiV1ChatChatIdDeleteResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/chat/{chat_id}',
+            path: {
+                chat_id: data.chatId
+            },
             errors: {
                 422: 'Validation Error'
             }
@@ -159,13 +273,70 @@ export class DefaultService {
     
 }
 
+export class DocumentService {
+    /**
+     * Upload
+     * Upload and process documents.
+     * @param data The data for the request.
+     * @param data.formData
+     * @returns backend__modules__document__api__Message Successful Response
+     * @throws ApiError
+     */
+    public static uploadApiV1DocumentPost(data: UploadApiV1DocumentPostData): CancelablePromise<UploadApiV1DocumentPostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/document/',
+            formData: data.formData,
+            mediaType: 'multipart/form-data',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete
+     * Delete a document if it belongs to the user.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns backend__modules__document__api__Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteApiV1DocumentDelete(data: DeleteApiV1DocumentDeleteData): CancelablePromise<DeleteApiV1DocumentDeleteResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/document/',
+            query: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get All
+     * Get list of user's documents.
+     * @returns Documents Successful Response
+     * @throws ApiError
+     */
+    public static getAllApiV1DocumentAllGet(): CancelablePromise<GetAllApiV1DocumentAllGetResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/document/all'
+        });
+    }
+    
+}
+
 export class ForgotPasswordService {
     /**
      * Request
      * Request a password reset and send reset email to user.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns Message Successful Response
+     * @returns backend__modules__forgot_password__api__Message Successful Response
      * @throws ApiError
      */
     public static requestApiV1ForgotPasswordPost(data: RequestApiV1ForgotPasswordPostData): CancelablePromise<RequestApiV1ForgotPasswordPostResponse> {
@@ -185,7 +356,7 @@ export class ForgotPasswordService {
      * Verify password reset token and update user's password.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns Message Successful Response
+     * @returns backend__modules__forgot_password__api__Message Successful Response
      * @throws ApiError
      */
     public static verifyApiV1ForgotPasswordVerifyPost(data: VerifyApiV1ForgotPasswordVerifyPostData): CancelablePromise<VerifyApiV1ForgotPasswordVerifyPostResponse> {
@@ -213,6 +384,29 @@ export class HealthService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/health'
+        });
+    }
+    
+}
+
+export class MessageService {
+    /**
+     * Post Message
+     * Post a message to a chat and get AI response.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns MessagePublic Successful Response
+     * @throws ApiError
+     */
+    public static postMessageApiV1MessagePost(data: PostMessageApiV1MessagePostData): CancelablePromise<PostMessageApiV1MessagePostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/message/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
         });
     }
     
@@ -293,7 +487,7 @@ export class UsersService {
      * Sign up a new user and send verification email.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns Auth Successful Response
+     * @returns OAuth Successful Response
      * @throws ApiError
      */
     public static signupApiV1UserSignupPost(data: SignupApiV1UserSignupPostData): CancelablePromise<SignupApiV1UserSignupPostResponse> {
@@ -311,7 +505,7 @@ export class UsersService {
     /**
      * Resend Verification
      * Resend verification email to unverified user.
-     * @returns Message Successful Response
+     * @returns backend__models__Message Successful Response
      * @throws ApiError
      */
     public static resendVerificationApiV1UserResendVerificationPost(): CancelablePromise<ResendVerificationApiV1UserResendVerificationPostResponse> {
@@ -346,7 +540,7 @@ export class UsersService {
      * Login user with email and password.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns Auth Successful Response
+     * @returns OAuth Successful Response
      * @throws ApiError
      */
     public static loginApiV1UserLoginPost(data: LoginApiV1UserLoginPostData): CancelablePromise<LoginApiV1UserLoginPostResponse> {
@@ -397,7 +591,7 @@ export class UsersService {
     /**
      * Delete
      * Delete current user's account.
-     * @returns Message Successful Response
+     * @returns backend__models__Message Successful Response
      * @throws ApiError
      */
     public static deleteApiV1UserDelete(): CancelablePromise<DeleteApiV1UserDeleteResponse> {
@@ -412,13 +606,33 @@ export class UsersService {
      * Change current user's password.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns Message Successful Response
+     * @returns backend__models__Message Successful Response
      * @throws ApiError
      */
     public static changePasswordApiV1UserChangePasswordPost(data: ChangePasswordApiV1UserChangePasswordPostData): CancelablePromise<ChangePasswordApiV1UserChangePasswordPostResponse> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/user/change-password',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Set Password
+     * Set password for OAuth users who don't have a password yet.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns backend__models__Message Successful Response
+     * @throws ApiError
+     */
+    public static setPasswordApiV1UserSetPasswordPost(data: SetPasswordApiV1UserSetPasswordPostData): CancelablePromise<SetPasswordApiV1UserSetPasswordPostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/user/set-password',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
@@ -461,30 +675,115 @@ export class UsersService {
     }
     
     /**
-     * Google Auth
-     * Initiate Google OAuth flow by redirecting to Google consent screen.
-     * @returns unknown Successful Response
+     * Google Login
+     * Get Google OAuth authorization URL.
+     * @returns OAuthUrl Successful Response
      * @throws ApiError
      */
-    public static googleAuthApiV1UserGoogleAuthGet(): CancelablePromise<GoogleAuthApiV1UserGoogleAuthGetResponse> {
+    public static googleLoginApiV1UserGoogleLoginGet(): CancelablePromise<GoogleLoginApiV1UserGoogleLoginGetResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/user/google-auth'
+            url: '/api/v1/user/google-login'
         });
     }
     
     /**
-     * Google Auth Callback
+     * Google Login Callback
      * Handle Google OAuth callback with authorization code.
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns Auth Successful Response
+     * @returns OAuth Successful Response
      * @throws ApiError
      */
-    public static googleAuthCallbackApiV1UserGoogleAuthCallbackPost(data: GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostData): CancelablePromise<GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostResponse> {
+    public static googleLoginCallbackApiV1UserGoogleLoginCallbackPost(data: GoogleLoginCallbackApiV1UserGoogleLoginCallbackPostData): CancelablePromise<GoogleLoginCallbackApiV1UserGoogleLoginCallbackPostResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/user/google-auth/callback',
+            url: '/api/v1/user/google-login/callback',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+}
+
+export class XeroService {
+    /**
+     * Xero Login
+     * Get Xero OAuth authorization URL for login.
+     * @returns OAuthUrl Successful Response
+     * @throws ApiError
+     */
+    public static loginApiV1XeroLoginGet(): CancelablePromise<XeroLoginApiV1XeroLoginGetResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/xero/login'
+        });
+    }
+    
+    /**
+     * Xero Login Callback
+     * Handle Xero OAuth callback with authorization code.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns OAuth Successful Response
+     * @throws ApiError
+     */
+    public static loginCallbackApiV1XeroLoginCallbackPost(data: XeroLoginCallbackApiV1XeroLoginCallbackPostData): CancelablePromise<XeroLoginCallbackApiV1XeroLoginCallbackPostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/xero/login/callback',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+}
+
+export class XeroOrganizationService {
+    /**
+     * Get List
+     * Get all Xero organizations connected by the current user.
+     * @returns XeroOrganization Successful Response
+     * @throws ApiError
+     */
+    public static getListApiV1XeroOrganizationListGet(): CancelablePromise<GetListApiV1XeroOrganizationListGetResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/xero-organization/list'
+        });
+    }
+    
+    /**
+     * Connect
+     * Get Xero OAuth authorization URL for organization connection.
+     * @returns OAuthUrl Successful Response
+     * @throws ApiError
+     */
+    public static connectApiV1XeroOrganizationConnectGet(): CancelablePromise<ConnectApiV1XeroOrganizationConnectGetResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/xero-organization/connect'
+        });
+    }
+    
+    /**
+     * Connect Callback
+     * Handle Xero organization connection OAuth callback with authorization code.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns backend__models__Message Successful Response
+     * @throws ApiError
+     */
+    public static connectCallbackApiV1XeroOrganizationConnectCallbackPost(data: ConnectCallbackApiV1XeroOrganizationConnectCallbackPostData): CancelablePromise<ConnectCallbackApiV1XeroOrganizationConnectCallbackPostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/xero-organization/connect/callback',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {

@@ -11,7 +11,7 @@ from sqlmodel import Session
 
 from backend.core.password import password_manager
 from backend.core.token import token_manager
-from backend.models import User
+from backend.models import User, UserPublic
 
 from .db import user_db
 from .exceptions import (
@@ -19,9 +19,11 @@ from .exceptions import (
     InvalidCredentials,
     InvalidPasswordChange,
     InvalidVerificationCode,
+    PasswordAlreadyExists,
     UserAlreadyVerified,
     UserNotFound,
 )
+from .lib import user_to_public
 
 
 class UserService:
@@ -76,24 +78,20 @@ class UserService:
         full_name: str,
         auth_provider: str,
     ) -> User:
-        """Create a user from OAuth provider.
-
+        """
+        Create a user from OAuth provider.
         These users are pre-verified since they come from trusted providers.
         """
         # Check if user already exists
         if user_db.exists_by_email(session, email):
             raise ValueError(f"User with email {email} already exists")
 
-        # Generate random password
-        random_password = token_manager.generate_password()
-        hashed_password = password_manager.get_hash(random_password)
-
         # Create user
         user = user_db.create(
             session,
             email=email,
             full_name=full_name,
-            hashed_password=hashed_password,
+            hashed_password=None,
             signup_verified=datetime.now(),
             signup_token=None,
             auth_provider=auth_provider,
@@ -124,6 +122,8 @@ class UserService:
 
     def verify_password(self, user: User, password: str) -> bool:
         """Verify user password."""
+        if not user.hashed_password:
+            return False
         return password_manager.verify(password, user.hashed_password)
 
     def authenticate(self, session: Session, email: str, password: str) -> User:
@@ -160,6 +160,21 @@ class UserService:
         user = user_db.get_by_id(session, user_id)
         if not user:
             raise UserNotFound(str(user_id))
+
+        # Update password on fetched user object
+        user.hashed_password = password_manager.get_hash(new_password)
+        user.updated_at = datetime.now()
+        session.flush()
+
+        return user
+
+    def set_password(self, session: Session, user_id: UUID, new_password: str) -> User:
+        """Set password for users without a password (e.g., OAuth users)."""
+        user = user_db.get_by_id(session, user_id)
+        if not user:
+            raise UserNotFound(str(user_id))
+        if user.hashed_password:
+            raise PasswordAlreadyExists()
 
         # Update password on fetched user object
         user.hashed_password = password_manager.get_hash(new_password)
@@ -213,6 +228,27 @@ class UserService:
         session.flush()
 
         return user
+
+    def verify_via_oauth(
+        self, session: Session, user: User, auth_provider: str
+    ) -> User:
+        """Verify an existing unverified user via OAuth provider."""
+        if user.signup_verified:
+            # Already verified, just return the user
+            return user
+
+        # Mark as verified via OAuth provider
+        user.signup_token = None
+        user.signup_verified = datetime.now()
+        user.auth_provider = auth_provider
+        user.updated_at = datetime.now()
+        session.flush()
+
+        return user
+
+    def to_public(self, user: User, pending_2fa: bool = False) -> UserPublic:
+        """Convert User model to UserPublic with 2FA status."""
+        return user_to_public(user, pending_2fa)
 
 
 # Global instance

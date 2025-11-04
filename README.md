@@ -1,4 +1,4 @@
-# Sample
+# Sample AI
 
 Modern full-stack web application with FastAPI backend and Next.js 15 frontend.
 
@@ -37,8 +37,8 @@ Modern full-stack web application with FastAPI backend and Next.js 15 frontend.
 1. **Clone and setup:**
 
    ```bash
-   git clone https://github.com/the-ahmad-dev/sample-next-fast-api.git
-   cd sample-next-fast-api
+   git clone https://github.com/triplek-tech/sample-ai.git
+   cd sample-ai
    ```
 
 2. **Backend:**
@@ -129,7 +129,7 @@ For detailed architecture guidelines, see [ARCHITECTURE.md](ARCHITECTURE.md).
 ## Project Structure
 
 ```
-sample-next-fast-api/
+sample-ai/
 ├── backend/              # FastAPI application
 │   ├── core/             # Core utilities (auth, db, email, rate limiting)
 │   ├── modules/          # Feature modules (user, two_fa, forgot_password)
@@ -150,9 +150,9 @@ Copy `.env.example` to `.env` and configure:
 
 ```bash
 # Essential variables
-APP_NAME=Sample
+APP_NAME=Sample AI
 JWT_SECRET_KEY=your-secret-key
-POSTGRES_DB=sample_db
+POSTGRES_DB=medial_db
 POSTGRES_PASSWORD=your-password
 REDIS_URL=redis://localhost:6379/0
 SENDGRID_API_KEY=your-api-key
@@ -170,8 +170,8 @@ See `.env.example` for complete list.
 ### Docker
 
 ```bash
-docker build -t sample:latest .
-docker run -d -p 8000:8000 sample:latest
+docker build -t sample-ai:latest .
+docker run -d -p 8000:8000 sample-ai:latest
 ```
 
 ### Manual
@@ -182,11 +182,19 @@ docker run -d -p 8000:8000 sample:latest
 4. Build frontend: `cd frontend && pnpm build`
 5. Serve frontend with backend or separately
 
+## Legacy Components (DO NOT MODIFY)
+
+These directories are deprecated and should not be modified:
+
+- `data-engineering/` - Legacy Azure Functions
+- `web-app/` - Deprecated Django application
+- `testing/` - Old test infrastructure
+
 ## License
 
 Proprietary
 
 ## Support
 
-- **Issues:** https://github.com/the-ahmad-dev/sample-next-fast-api/issues
+- **Issues:** https://github.com/triplek-tech/sample-ai/issues
 - **Documentation:** See ARCHITECTURE.md and CLAUDE.md

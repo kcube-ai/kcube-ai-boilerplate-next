@@ -9,6 +9,46 @@ export type Auth = {
 };
 
 /**
+ * Message model representing individual chat messages.
+ */
+export type backend__models__Message = {
+    id?: string;
+    created_at?: string;
+    updated_at?: string;
+    chat_id: string;
+    role: MessageRole;
+    content: string;
+    meta_data: ({
+    [key: string]: unknown;
+} | null);
+};
+
+/**
+ * Simple message response.
+ */
+export type backend__modules__book_demo__api__Message = {
+    message: string;
+};
+
+/**
+ * Simple message response.
+ */
+export type backend__modules__document__api__Message = {
+    message: string;
+};
+
+/**
+ * Simple message response.
+ */
+export type backend__modules__forgot_password__api__Message = {
+    message: string;
+};
+
+export type Body_upload_api_v1_document__post = {
+    files: Array<((Blob | File))>;
+};
+
+/**
  * Request model for booking a demo.
  */
 export type BookDemoRequest = {
@@ -23,6 +63,62 @@ export type ChangePasswordRequest = {
     new_password: string;
 };
 
+/**
+ * Request model for creating a chat.
+ */
+export type ChatCreate = {
+    title?: string;
+};
+
+/**
+ * Public chat model for API responses.
+ */
+export type ChatPublic = {
+    id: string;
+    user_id: string;
+    title: string;
+    created_at: string;
+    updated_at: string;
+};
+
+/**
+ * Request model for updating a chat.
+ */
+export type ChatUpdate = {
+    title: string;
+};
+
+/**
+ * Chat model with messages included.
+ */
+export type ChatWithMessages = {
+    id: string;
+    user_id: string;
+    title: string;
+    created_at: string;
+    updated_at: string;
+    messages: Array<MessagePublic>;
+};
+
+/**
+ * Document model representing user-uploaded files.
+ */
+export type Document = {
+    id?: string;
+    created_at?: string;
+    updated_at?: string;
+    user_id: string;
+    name: string;
+    size?: string;
+    status: DocumentStatus;
+};
+
+export type Documents = {
+    documents: Array<Document>;
+};
+
+export type DocumentStatus = 'PENDING' | 'PROCESSING' | 'INDEXED' | 'FAILED';
+
 export type ForgotPasswordRequest = {
     email: string;
 };
@@ -33,9 +129,6 @@ export type ForgotPasswordVerifyRequest = {
     new_password: string;
 };
 
-/**
- * Request model for Google OAuth callback.
- */
 export type GoogleAuthCallbackRequest = {
     code: string;
 };
@@ -50,10 +143,47 @@ export type LoginRequest = {
 };
 
 /**
- * Simple message response.
+ * Request model for creating a message.
  */
-export type Message = {
-    message: string;
+export type MessageCreate = {
+    chat_id?: (string | null);
+    content: string;
+};
+
+/**
+ * Public message model for API responses.
+ */
+export type MessagePublic = {
+    id: string;
+    chat_id: string;
+    role: string;
+    content: string;
+    meta_data: ({
+    [key: string]: unknown;
+} | null);
+    created_at: string;
+    updated_at: string;
+};
+
+export type MessageRole = 'USER' | 'SYSTEM' | 'ASSISTANT';
+
+/**
+ * Authentication response with token and user data.
+ */
+export type OAuth = {
+    access_token: string;
+    user: UserPublic;
+};
+
+/**
+ * OAuth authorization URL response.
+ */
+export type OAuthUrl = {
+    url: string;
+};
+
+export type SetPasswordRequest = {
+    new_password: string;
 };
 
 export type SignupRequest = {
@@ -91,8 +221,11 @@ export type UserPublic = {
     is_admin: boolean;
     two_fa_enabled: boolean;
     pending_2fa?: boolean;
+    has_password: boolean;
     created_at: string;
     updated_at: string;
+    documents_count: number;
+    organizations_count: number;
 };
 
 export type ValidationError = {
@@ -105,11 +238,71 @@ export type VerifySignupRequest = {
     signup_token: string;
 };
 
+export type XeroOAuthCallbackRequest = {
+    code: string;
+};
+
+/**
+ * Xero organization connection tracking.
+ */
+export type XeroOrganization = {
+    id?: string;
+    created_at?: string;
+    updated_at?: string;
+    name: string;
+    tenant_id: string;
+    connection_id: string;
+    status?: XeroOrganizationStatus;
+    last_sync_at?: (string | null);
+    user_id: string;
+};
+
+/**
+ * Xero organization connection status.
+ */
+export type XeroOrganizationStatus = 'PENDING' | 'SYNCING' | 'RESYNCING' | 'FAILED' | 'CONNECTED';
+
+export type XeroOrgConnectCallbackRequest = {
+    code: string;
+};
+
 export type CreateApiV1BookDemoPostData = {
     requestBody: BookDemoRequest;
 };
 
-export type CreateApiV1BookDemoPostResponse = (Message);
+export type CreateApiV1BookDemoPostResponse = (backend__modules__book_demo__api__Message);
+
+export type CreateApiV1ChatPostData = {
+    requestBody: ChatCreate;
+};
+
+export type CreateApiV1ChatPostResponse = (ChatPublic);
+
+export type GetListApiV1ChatListGetData = {
+    limit?: number;
+};
+
+export type GetListApiV1ChatListGetResponse = (Array<ChatPublic>);
+
+export type GetApiV1ChatChatIdGetData = {
+    chatId: string;
+    maxMessages?: number;
+};
+
+export type GetApiV1ChatChatIdGetResponse = (ChatWithMessages);
+
+export type UpdateApiV1ChatChatIdPutData = {
+    chatId: string;
+    requestBody: ChatUpdate;
+};
+
+export type UpdateApiV1ChatChatIdPutResponse = (ChatPublic);
+
+export type DeleteApiV1ChatChatIdDeleteData = {
+    chatId: string;
+};
+
+export type DeleteApiV1ChatChatIdDeleteResponse = (backend__models__Message);
 
 export type ServeIconIconPngGetResponse = (unknown);
 
@@ -139,19 +332,39 @@ export type ServeFrontendPathGetData = {
 
 export type ServeFrontendPathGetResponse = (unknown);
 
+export type UploadApiV1DocumentPostData = {
+    formData: Body_upload_api_v1_document__post;
+};
+
+export type UploadApiV1DocumentPostResponse = (backend__modules__document__api__Message);
+
+export type DeleteApiV1DocumentDeleteData = {
+    id: string;
+};
+
+export type DeleteApiV1DocumentDeleteResponse = (backend__modules__document__api__Message);
+
+export type GetAllApiV1DocumentAllGetResponse = (Documents);
+
 export type RequestApiV1ForgotPasswordPostData = {
     requestBody: ForgotPasswordRequest;
 };
 
-export type RequestApiV1ForgotPasswordPostResponse = (Message);
+export type RequestApiV1ForgotPasswordPostResponse = (backend__modules__forgot_password__api__Message);
 
 export type VerifyApiV1ForgotPasswordVerifyPostData = {
     requestBody: ForgotPasswordVerifyRequest;
 };
 
-export type VerifyApiV1ForgotPasswordVerifyPostResponse = (Message);
+export type VerifyApiV1ForgotPasswordVerifyPostResponse = (backend__modules__forgot_password__api__Message);
 
 export type CheckApiV1HealthGetResponse = (unknown);
+
+export type PostMessageApiV1MessagePostData = {
+    requestBody: MessageCreate;
+};
+
+export type PostMessageApiV1MessagePostResponse = (MessagePublic);
 
 export type SetupApiV1TwoFaSetupGetResponse = (URL);
 
@@ -173,9 +386,9 @@ export type SignupApiV1UserSignupPostData = {
     requestBody: SignupRequest;
 };
 
-export type SignupApiV1UserSignupPostResponse = (Auth);
+export type SignupApiV1UserSignupPostResponse = (OAuth);
 
-export type ResendVerificationApiV1UserResendVerificationPostResponse = (Message);
+export type ResendVerificationApiV1UserResendVerificationPostResponse = (backend__models__Message);
 
 export type VerifySignupApiV1UserVerifySignupPostData = {
     requestBody: VerifySignupRequest;
@@ -187,7 +400,7 @@ export type LoginApiV1UserLoginPostData = {
     requestBody: LoginRequest;
 };
 
-export type LoginApiV1UserLoginPostResponse = (Auth);
+export type LoginApiV1UserLoginPostResponse = (OAuth);
 
 export type GetMeApiV1UserMeGetResponse = (UserPublic);
 
@@ -197,13 +410,19 @@ export type UpdateApiV1UserPutData = {
 
 export type UpdateApiV1UserPutResponse = (UserPublic);
 
-export type DeleteApiV1UserDeleteResponse = (Message);
+export type DeleteApiV1UserDeleteResponse = (backend__models__Message);
 
 export type ChangePasswordApiV1UserChangePasswordPostData = {
     requestBody: ChangePasswordRequest;
 };
 
-export type ChangePasswordApiV1UserChangePasswordPostResponse = (Message);
+export type ChangePasswordApiV1UserChangePasswordPostResponse = (backend__models__Message);
+
+export type SetPasswordApiV1UserSetPasswordPostData = {
+    requestBody: SetPasswordRequest;
+};
+
+export type SetPasswordApiV1UserSetPasswordPostResponse = (backend__models__Message);
 
 export type UpdateProfilePictureApiV1UserProfilePicturePostData = {
     requestBody: UpdateProfilePictureRequest;
@@ -213,10 +432,28 @@ export type UpdateProfilePictureApiV1UserProfilePicturePostResponse = (UserPubli
 
 export type RemoveProfilePictureApiV1UserProfilePictureDeleteResponse = (UserPublic);
 
-export type GoogleAuthApiV1UserGoogleAuthGetResponse = (unknown);
+export type GoogleLoginApiV1UserGoogleLoginGetResponse = (OAuthUrl);
 
-export type GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostData = {
+export type GoogleLoginCallbackApiV1UserGoogleLoginCallbackPostData = {
     requestBody: GoogleAuthCallbackRequest;
 };
 
-export type GoogleAuthCallbackApiV1UserGoogleAuthCallbackPostResponse = (Auth);
+export type GoogleLoginCallbackApiV1UserGoogleLoginCallbackPostResponse = (OAuth);
+
+export type XeroLoginApiV1XeroLoginGetResponse = (OAuthUrl);
+
+export type XeroLoginCallbackApiV1XeroLoginCallbackPostData = {
+    requestBody: XeroOAuthCallbackRequest;
+};
+
+export type XeroLoginCallbackApiV1XeroLoginCallbackPostResponse = (OAuth);
+
+export type GetListApiV1XeroOrganizationListGetResponse = (Array<XeroOrganization>);
+
+export type ConnectApiV1XeroOrganizationConnectGetResponse = (OAuthUrl);
+
+export type ConnectCallbackApiV1XeroOrganizationConnectCallbackPostData = {
+    requestBody: XeroOrgConnectCallbackRequest;
+};
+
+export type ConnectCallbackApiV1XeroOrganizationConnectCallbackPostResponse = (backend__models__Message);

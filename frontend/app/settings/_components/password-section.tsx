@@ -11,11 +11,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
 import { handleError } from "@/lib/error";
 import { ERROR_MESSAGES, isValidPassword } from "@/lib/validation";
 
 export function PasswordSection() {
+  const { user, setUser } = useUser();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
@@ -23,6 +25,8 @@ export function PasswordSection() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const hasPassword = user?.has_password ?? true;
 
   const handleCancel = () => {
     setOldPassword("");
@@ -35,7 +39,8 @@ export function PasswordSection() {
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!oldPassword) {
+    // Only require old password if user has a password
+    if (hasPassword && !oldPassword) {
       newErrors.oldPassword = ERROR_MESSAGES.REQUIRED_FIELD;
     }
 
@@ -60,16 +65,34 @@ export function PasswordSection() {
 
     try {
       setIsLoading(true);
-      await UsersService.changePasswordApiV1UserChangePasswordPost({
-        requestBody: {
-          old_password: oldPassword,
-          new_password: newPassword,
-        },
-      });
+
+      if (hasPassword) {
+        // Change existing password
+        await UsersService.changePasswordApiV1UserChangePasswordPost({
+          requestBody: {
+            old_password: oldPassword,
+            new_password: newPassword,
+          },
+        });
+      } else {
+        // Set password for OAuth users
+        await UsersService.setPasswordApiV1UserSetPasswordPost({
+          requestBody: {
+            new_password: newPassword,
+          },
+        });
+        // Update user state to reflect password is now set
+        if (user) {
+          setUser({ ...user, has_password: true });
+        }
+      }
+
       handleCancel();
       toast({
         title: "Success",
-        description: "Password changed successfully",
+        description: hasPassword
+          ? "Password changed successfully"
+          : "Password set successfully",
       });
     } catch (error) {
       handleError(error);
@@ -87,37 +110,44 @@ export function PasswordSection() {
               Password
             </h3>
             <p className="text-sm text-muted-foreground">
-              Update your password regularly to keep your account secure. Use a
-              strong password with at least 8 characters.
+              {hasPassword
+                ? "Update your password regularly to keep your account secure. Use a strong password with at least 8 characters."
+                : "Set a password to enable traditional email/password login in addition to OAuth."}
             </p>
           </div>
           <Button
             onClick={() => setIsOpen(true)}
             className="px-4 py-2 text-sm flex-shrink-0"
           >
-            Change Password
+            {hasPassword ? "Change Password" : "Set Password"}
           </Button>
         </div>
       </div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
+            <DialogTitle>
+              {hasPassword ? "Change Password" : "Set Password"}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Enter your current password and choose a new one
+              {hasPassword
+                ? "Enter your current password and choose a new one"
+                : "Create a password to enable email/password login"}
             </p>
-            <AuthInput
-              id="oldPassword"
-              label="Current Password"
-              type="password"
-              placeholder="••••••••"
-              value={oldPassword}
-              onChange={setOldPassword}
-              error={errors.oldPassword}
-              disabled={isLoading}
-            />
+            {hasPassword && (
+              <AuthInput
+                id="oldPassword"
+                label="Current Password"
+                type="password"
+                placeholder="••••••••"
+                value={oldPassword}
+                onChange={setOldPassword}
+                error={errors.oldPassword}
+                disabled={isLoading}
+              />
+            )}
             <AuthInput
               id="newPassword"
               label="New Password"
@@ -148,7 +178,13 @@ export function PasswordSection() {
                 Cancel
               </Button>
               <Button onClick={handleSave} disabled={isLoading}>
-                {isLoading ? "Changing..." : "Change Password"}
+                {isLoading
+                  ? hasPassword
+                    ? "Changing..."
+                    : "Setting..."
+                  : hasPassword
+                  ? "Change Password"
+                  : "Set Password"}
               </Button>
             </div>
           </div>

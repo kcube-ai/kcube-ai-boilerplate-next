@@ -1,5 +1,5 @@
 """
-Google OAuth service for handling Google authentication flow.
+Google service for handling Google authentication flow.
 Provides OAuth client creation and user info retrieval.
 """
 
@@ -12,28 +12,28 @@ from backend.core.config import settings
 
 
 class GoogleUserInfo(BaseModel):
-    """Google OAuth user information."""
+    """Google user information."""
 
     email: str
     full_name: str
     avatar_url: str | None = None
 
 
-class GoogleOAuthService:
-    """Service for Google OAuth operations."""
+class GoogleService:
+    """Service for Google operations."""
 
     def __init__(self):
-        """Initialize with OAuth credentials."""
-        self.client_id = settings.GOOGLE_OAUTH_CLIENT_ID
-        self.client_secret = settings.GOOGLE_OAUTH_CLIENT_SECRET
-        self.redirect_uri = settings.GOOGLE_OAUTH_REDIRECT_URI
+        """Initialize with credentials."""
+        self.client_id = settings.GOOGLE_CLIENT_ID
+        self.client_secret = settings.GOOGLE_CLIENT_SECRET
+        self.redirect_uri = settings.GOOGLE_LOGIN_REDIRECT_URI
         self.scopes = "openid email profile"
         self.token_url = "https://oauth2.googleapis.com/token"
         self.auth_url = "https://accounts.google.com/o/oauth2/v2/auth"
         self.userinfo_url = "https://www.googleapis.com/oauth2/v3/userinfo"
 
     def get_authorization_url(self) -> str:
-        """Get Google OAuth authorization URL."""
+        """Get Google authorization URL."""
         params = {
             "client_id": self.client_id,
             "redirect_uri": self.redirect_uri,
@@ -87,4 +87,4 @@ class GoogleOAuthService:
 
 
 # Global instance
-google_oauth_service = GoogleOAuthService()
+google_service = GoogleService()

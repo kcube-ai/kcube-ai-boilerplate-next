@@ -21,12 +21,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         >
           <Menu className="h-6 w-6" />
         </Button>
-        <div className="hidden lg:block">
-          <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
-        </div>
-        <div className="lg:hidden">
-          <span className="text-xl font-bold text-sample-blue">Sample</span>
-        </div>
+        <div className="flex-1" />
         <ProfileDropdown />
       </div>
     </header>

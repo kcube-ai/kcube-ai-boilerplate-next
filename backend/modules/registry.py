@@ -52,12 +52,52 @@ MODULES = [
         tags=["Forgot Password"],
     ),
     ModuleConfig(
+        name="Document",
+        router=lambda: __import__(
+            "backend.modules.document.api", fromlist=["router"]
+        ).router,
+        prefix="/document",
+        tags=["Document"],
+    ),
+    ModuleConfig(
         name="book_demo",
         router=lambda: __import__(
             "backend.modules.book_demo.api", fromlist=["router"]
         ).router,
         prefix="/book-demo",
         tags=["Book Demo"],
+    ),
+    ModuleConfig(
+        name="chat",
+        router=lambda: __import__(
+            "backend.modules.chat.api", fromlist=["router"]
+        ).router,
+        prefix="/chat",
+        tags=["Chat"],
+    ),
+    ModuleConfig(
+        name="message",
+        router=lambda: __import__(
+            "backend.modules.message.api", fromlist=["router"]
+        ).router,
+        prefix="/message",
+        tags=["Message"],
+    ),
+    ModuleConfig(
+        name="xero",
+        router=lambda: __import__(
+            "backend.modules.xero.api", fromlist=["router"]
+        ).router,
+        prefix="/xero",
+        tags=["Xero"],
+    ),
+    ModuleConfig(
+        name="xero_organization",
+        router=lambda: __import__(
+            "backend.modules.xero_organization.api", fromlist=["router"]
+        ).router,
+        prefix="/xero-organization",
+        tags=["Xero Organization"],
     ),
 ]
 

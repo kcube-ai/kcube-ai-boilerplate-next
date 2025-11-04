@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera } from "lucide-react";
+import { Calendar, Camera } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { UsersService } from "@/app/client";
@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useUser } from "@/contexts/user-context";
+import { formatDate, formatDateFull } from "@/lib/format";
 import { getInitials } from "@/lib/format";
 import { handleError } from "@/lib/error";
 import {
@@ -159,7 +160,20 @@ export function ProfileHeaderSection() {
             <h2 className="text-2xl font-semibold text-foreground truncate">
               {user?.full_name}
             </h2>
-            <p className="text-sm text-muted-foreground mt-1">{user?.email}</p>
+            <p className="text-base text-foreground/80 mt-1.5 font-medium">
+              {user?.email}
+            </p>
+            {user?.signup_verified && (
+              <div
+                className="inline-flex items-center gap-2 mt-2.5 px-2.5 py-1 bg-secondary/80 rounded-md border border-border"
+                title={formatDateFull(user.signup_verified)}
+              >
+                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">
+                  Joined {formatDate(user.signup_verified, false)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Action */}

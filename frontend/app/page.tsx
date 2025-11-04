@@ -11,7 +11,7 @@ import { SecuritySection } from "@/components/landing/security-section";
 import { VideoSection } from "@/components/landing/video-section";
 
 export const metadata: Metadata = {
-  title: "Sample App - Analyze & Manage Accounting Data with Powerful AI",
+  title: "Sample AI - Analyze & Manage Accounting Data with Powerful AI",
   description:
     "AI-powered SaaS application designed to revolutionize the way you manage and analyze your accounting data. AI empowers businesses by providing accurate, timely, and insightful financial analysis.",
   keywords: [

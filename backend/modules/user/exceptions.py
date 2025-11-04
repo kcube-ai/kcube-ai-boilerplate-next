@@ -55,6 +55,15 @@ class InvalidVerificationCode(AppException):
         super().__init__(self.MESSAGE, status_code=400)
 
 
+class PasswordAlreadyExists(AppException):
+    """Raised when password already exists for a user during set password."""
+
+    MESSAGE = "Password is already set."
+
+    def __init__(self):
+        super().__init__(self.MESSAGE, status_code=400)
+
+
 class InvalidSignupToken(AppException):
     """Raised when signup token format is invalid."""
 
@@ -86,6 +95,15 @@ class InvalidProfilePicture(AppException):
     """Raised when profile picture data is invalid."""
 
     MESSAGE = "Invalid profile picture. Must be a valid image (JPEG, PNG, GIF, WebP) under 5MB"
+
+    def __init__(self):
+        super().__init__(self.MESSAGE, status_code=400)
+
+
+class InvalidGoogleToken(AppException):
+    """Raised when Google OAuth token is invalid."""
+
+    MESSAGE = "Invalid Google OAuth token"
 
     def __init__(self):
         super().__init__(self.MESSAGE, status_code=400)

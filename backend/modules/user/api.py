@@ -3,8 +3,9 @@ RESTful API endpoints for user management operations.
 Provides signup, login, verification, and profile management endpoints.
 """
 
+import logging
+
 from fastapi import APIRouter, BackgroundTasks, Depends
-from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, field_validator
 
@@ -21,9 +22,9 @@ from backend.core.validation import (
     normalize_email,
     normalize_full_name,
 )
-from backend.models import UserPublic
+from backend.models import Message, OAuth, OAuthUrl, UserPublic
 from backend.modules.two_fa.two_fa import two_fa_service
-from backend.services.google_oauth import google_oauth_service
+from backend.services.google import google_service
 
 from .background import send_verification_email_task, send_welcome_email_task
 from .exceptions import (
@@ -32,8 +33,9 @@ from .exceptions import (
     InvalidSignupToken,
     UserAlreadyVerified,
 )
-from .lib import user_to_public
 from .user import user_service
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -120,6 +122,18 @@ class ChangePasswordRequest(BaseModel):
         return v
 
 
+class SetPasswordRequest(BaseModel):
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_new_password_field(cls, v: str) -> str:
+        """Validate new password."""
+        if not is_valid_password(v):
+            raise InvalidPasswordFormat()
+        return v
+
+
 class UpdateProfilePictureRequest(BaseModel):
     profile_picture: str
 
@@ -133,27 +147,11 @@ class UpdateProfilePictureRequest(BaseModel):
 
 
 class GoogleAuthCallbackRequest(BaseModel):
-    """Request model for Google OAuth callback."""
-
     code: str
 
 
-# Response models
-class Message(BaseModel):
-    """Simple message response."""
-
-    message: str
-
-
-class Auth(BaseModel):
-    """Authentication response with token and user data."""
-
-    access_token: str
-    user: UserPublic
-
-
 @router.post(
-    "/signup", response_model=Auth, dependencies=[Depends(rate_limit(2, hours=24))]
+    "/signup", response_model=OAuth, dependencies=[Depends(rate_limit(2, hours=24))]
 )
 def signup(
     user_data: SignupRequest,
@@ -185,9 +183,9 @@ def signup(
     # Commit
     session.commit()
 
-    return Auth(
+    return OAuth(
         access_token=access_token,
-        user=user_to_public(user),
+        user=user_service.to_public(user),
     )
 
 
@@ -235,10 +233,10 @@ def verify_signup(
     # Commit
     session.commit()
 
-    return user_to_public(user)
+    return user_service.to_public(user)
 
 
-@router.post("/login", response_model=Auth)
+@router.post("/login", response_model=OAuth)
 def login(data: LoginRequest, session: SessionDep):
     """Login user with email and password."""
     user = user_service.authenticate(session, data.email, data.password)
@@ -249,9 +247,9 @@ def login(data: LoginRequest, session: SessionDep):
     # Generate JWT token
     access_token = create_access_token(user.id, pending_2fa=two_fa_enabled)
 
-    return Auth(
+    return OAuth(
         access_token=access_token,
-        user=user_to_public(user, pending_2fa=two_fa_enabled),
+        user=user_service.to_public(user, pending_2fa=two_fa_enabled),
     )
 
 
@@ -265,7 +263,7 @@ def get_me(
     token = credentials.credentials
     pending_2fa = get_pending_2fa_from_token(token)
 
-    return user_to_public(current_user, pending_2fa=pending_2fa)
+    return user_service.to_public(current_user, pending_2fa=pending_2fa)
 
 
 @router.put("/", response_model=UserPublic)
@@ -282,7 +280,7 @@ def update(
     # Commit
     session.commit()
 
-    return user_to_public(user)
+    return user_service.to_public(user)
 
 
 @router.delete("/", response_model=Message)
@@ -316,6 +314,25 @@ def change_password(
     return Message(message="Password changed successfully")
 
 
+@router.post("/set-password", response_model=Message)
+def set_password(
+    current_user: CurrentUserDep,
+    password_data: SetPasswordRequest,
+    session: SessionDep,
+):
+    """Set password for OAuth users who don't have a password yet."""
+    user_service.set_password(
+        session,
+        current_user.id,
+        password_data.new_password,
+    )
+
+    # Commit
+    session.commit()
+
+    return Message(message="Password set successfully")
+
+
 @router.post(
     "/profile-picture",
     response_model=UserPublic,
@@ -334,7 +351,7 @@ def update_profile_picture(
     # Commit
     session.commit()
 
-    return user_to_public(user)
+    return user_service.to_public(user)
 
 
 @router.delete("/profile-picture", response_model=UserPublic)
@@ -348,28 +365,25 @@ def remove_profile_picture(
     # Commit
     session.commit()
 
-    return user_to_public(user)
+    return user_service.to_public(user)
 
 
-@router.get("/google-auth")
-async def google_auth():
-    """Initiate Google OAuth flow by redirecting to Google consent screen."""
-    # Get authorization URL from Google
-    auth_url = google_oauth_service.get_authorization_url()
-
-    # Redirect to Google OAuth consent screen
-    return RedirectResponse(auth_url)
+@router.get("/google-login", response_model=OAuthUrl)
+def google_login():
+    """Get Google OAuth authorization URL."""
+    auth_url = google_service.get_authorization_url()
+    return OAuthUrl(url=auth_url)
 
 
-@router.post("/google-auth/callback", response_model=Auth)
-async def google_auth_callback(
+@router.post("/google-login/callback", response_model=OAuth)
+async def google_login_callback(
     data: GoogleAuthCallbackRequest,
     session: SessionDep,
     background_tasks: BackgroundTasks,
 ):
     """Handle Google OAuth callback with authorization code."""
     # Exchange code for user info
-    user_info = await google_oauth_service.get_user_info(data.code)
+    user_info = await google_service.get_user_info(data.code)
 
     # Continue for existing user, create new user otherwise
     user = user_service.get_by_email(session, user_info.email)
@@ -391,6 +405,17 @@ async def google_auth_callback(
             email=user.email,
             name=user.full_name,
         )
+    else:
+        # Existing user - if unverified, mark as verified via OAuth
+        if not user.signup_verified:
+            user = user_service.verify_via_oauth(session, user, "google")
+
+            # Send welcome email for newly verified user
+            background_tasks.add_task(
+                send_welcome_email_task,
+                email=user.email,
+                name=user.full_name,
+            )
 
     # Generate JWT token
     access_token = create_access_token(user.id)
@@ -398,7 +423,7 @@ async def google_auth_callback(
     # Commit
     session.commit()
 
-    return Auth(
+    return OAuth(
         access_token=access_token,
-        user=user_to_public(user),
+        user=user_service.to_public(user),
     )

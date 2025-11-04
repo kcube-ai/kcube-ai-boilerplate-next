@@ -64,7 +64,7 @@ const SampleLogo = () => {
           />
         </svg>
       </div>
-      <span className="text-xl font-semibold">Sample App</span>
+      <span className="text-xl font-semibold">Sample AI</span>
     </div>
   );
 };
@@ -95,7 +95,7 @@ export const SampleSidebar = () => {
   const pathname = usePathname();
   const { user } = useUser();
 
-  // Main navigation items for Sample App
+  // Main navigation items for Sample AI
   const navigationItems = [
     {
       href: "/dashboard",

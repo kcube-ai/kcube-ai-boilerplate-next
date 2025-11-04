@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Home, Settings } from "lucide-react";
+import { FileText, Home, Settings, Puzzle, MessageCircle } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
+  { name: "Chat", href: "/chat", icon: MessageCircle },
+  { name: "Documents", href: "/documents", icon: FileText },
+  { name: "Integrations", href: "/integrations", icon: Puzzle },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
