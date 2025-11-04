@@ -1,0 +1,12 @@
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+
+[tool.black]
+exclude = '''
+(
+    (^|/)venv/|
+    (^|/)\.venv/|
+    (^|/)backend/alembic/
+)
+'''

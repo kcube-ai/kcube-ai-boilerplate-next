@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to {{ project_name }}</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f6f6f6;
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    "
+  >
+    <!--[if mso]>
+      <style type="text/css">
+        body,
+        table,
+        td {
+          font-family: Arial, Helvetica, sans-serif !important;
+        }
+      </style>
+    <![endif]-->
+
+    <!-- Email Wrapper -->
+    <table
+      role="presentation"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="background-color: #f6f6f6"
+    >
+      <tr>
+        <td align="center" style="padding: 20px 0">
+          <!-- Main Content Container (600px) -->
+          <table
+            role="presentation"
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            width="600"
+            style="
+              max-width: 600px;
+              background-color: #ffffff;
+              border-radius: 8px;
+            "
+          >
+            <!-- Header -->
+            <tr>
+              <td
+                align="center"
+                style="
+                  background-color: #059fff;
+                  padding: 30px 20px;
+                  border-radius: 8px 8px 0 0;
+                "
+              >
+                <h1
+                  style="
+                    margin: 0;
+                    color: #ffffff;
+                    font-size: 24px;
+                    font-weight: bold;
+                    font-family: Arial, Helvetica, sans-serif;
+                  "
+                >
+                  Welcome to {{ project_name }}!
+                </h1>
+              </td>
+            </tr>
+
+            <!-- Body Content -->
+            <tr>
+              <td
+                style="
+                  padding: 30px;
+                  color: #333333;
+                  font-size: 16px;
+                  line-height: 24px;
+                  font-family: Arial, Helvetica, sans-serif;
+                "
+              >
+                <!-- Greeting -->
+                <p
+                  style="
+                    margin: 0 0 20px 0;
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #333333;
+                  "
+                >
+                  Hi {{ name }}!
+                </p>
+
+                <!-- Welcome Message -->
+                <p style="margin: 0 0 16px 0">
+                  Welcome to <strong>{{ project_name }}</strong>! We're thrilled
+                  to have you on board.
+                </p>
+
+                <p style="margin: 0 0 24px 0">
+                  Your account has been successfully verified and you're all set
+                  to get started. {{ project_name }} empowers you to seamlessly
+                  chat with your accounting data, making it easier to uncover
+                  insights and work more efficiently.
+                </p>
+
+                <!-- Feature Box -->
+                <table
+                  role="presentation"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                >
+                  <tr>
+                    <td
+                      style="
+                        padding: 20px;
+                        background-color: #f0f9ff;
+                        border-left: 4px solid #059fff;
+                        border-radius: 8px;
+                      "
+                    >
+                      <p
+                        style="
+                          margin: 0 0 12px 0;
+                          font-size: 16px;
+                          font-weight: bold;
+                          color: #333333;
+                        "
+                      >
+                        Here's what you can do next:
+                      </p>
+                      <table
+                        role="presentation"
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                      >
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • Connect your Xero account for instant data access
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • Start asking questions about your financial data
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • Explore AI-powered insights and reports
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • Set up automated workflows for your business
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- CTA Button -->
+                <table
+                  role="presentation"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                >
+                  <tr>
+                    <td align="center" style="padding: 30px 0">
+                      <a
+                        href="{{ app_public_url }}/dashboard"
+                        style="
+                          display: inline-block;
+                          padding: 14px 32px;
+                          background-color: #059fff;
+                          color: #ffffff;
+                          text-decoration: none;
+                          border-radius: 4px;
+                          font-size: 16px;
+                          font-weight: bold;
+                          font-family: Arial, Helvetica, sans-serif;
+                        "
+                        >Get Started Now</a
+                      >
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Help Section -->
+                <table
+                  role="presentation"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      style="
+                        padding: 20px;
+                        background-color: #f9f9f9;
+                        border-radius: 8px;
+                      "
+                    >
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          color: #666666;
+                          line-height: 20px;
+                        "
+                      >
+                        Need help getting started? Our support team is here for
+                        you.<br />Simply reply to this email anytime.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Signature -->
+                <p style="margin: 32px 0 0 0; color: #666666">
+                  Best regards,<br /><strong style="color: #333333"
+                    >The {{ project_name }} Team</strong
+                  >
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                align="center"
+                style="
+                  padding: 20px;
+                  background-color: #f0f0f0;
+                  color: #888888;
+                  font-size: 12px;
+                  line-height: 18px;
+                  font-family: Arial, Helvetica, sans-serif;
+                  border-radius: 0 0 8px 8px;
+                "
+              >
+                <p style="margin: 0">
+                  &copy; {{ current_year }} {{ project_name }}. All rights
+                  reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Request Received - {{ project_name }}</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f6f6f6;
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    "
+  >
+    <!--[if mso]>
+      <style type="text/css">
+        body,
+        table,
+        td {
+          font-family: Arial, Helvetica, sans-serif !important;
+        }
+      </style>
+    <![endif]-->
+
+    <!-- Email Wrapper -->
+    <table
+      role="presentation"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="background-color: #f6f6f6"
+    >
+      <tr>
+        <td align="center" style="padding: 20px 0">
+          <!-- Main Content Container (600px) -->
+          <table
+            role="presentation"
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            width="600"
+            style="
+              max-width: 600px;
+              background-color: #ffffff;
+              border-radius: 8px;
+            "
+          >
+            <!-- Header -->
+            <tr>
+              <td
+                align="center"
+                style="
+                  background-color: #059fff;
+                  padding: 30px 20px;
+                  border-radius: 8px 8px 0 0;
+                "
+              >
+                <h1
+                  style="
+                    margin: 0;
+                    color: #ffffff;
+                    font-size: 24px;
+                    font-weight: bold;
+                    font-family: Arial, Helvetica, sans-serif;
+                  "
+                >
+                  Demo Request Received!
+                </h1>
+              </td>
+            </tr>
+
+            <!-- Body Content -->
+            <tr>
+              <td
+                style="
+                  padding: 30px;
+                  color: #333333;
+                  font-size: 16px;
+                  line-height: 24px;
+                  font-family: Arial, Helvetica, sans-serif;
+                "
+              >
+                <!-- Greeting -->
+                <p
+                  style="
+                    margin: 0 0 20px 0;
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #333333;
+                  "
+                >
+                  Hi {{ name }}!
+                </p>
+
+                <!-- Message -->
+                <p style="margin: 0 0 16px 0">
+                  Thank you for your interest in
+                  <strong>{{ project_name }}</strong>! We've received your demo
+                  request and we're excited to show you what we can do for {{
+                  company_name }}.
+                </p>
+
+                <p style="margin: 0 0 24px 0">
+                  Our team will review your request and reach out to you at
+                  <strong>{{ email }}</strong> within the next 1-2 business days
+                  to schedule a personalized demo.
+                </p>
+
+                <!-- What to Expect Box -->
+                <table
+                  role="presentation"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                >
+                  <tr>
+                    <td
+                      style="
+                        padding: 20px;
+                        background-color: #f0f9ff;
+                        border-left: 4px solid #059fff;
+                        border-radius: 8px;
+                      "
+                    >
+                      <p
+                        style="
+                          margin: 0 0 12px 0;
+                          font-size: 16px;
+                          font-weight: bold;
+                          color: #333333;
+                        "
+                      >
+                        What to expect in your demo:
+                      </p>
+                      <table
+                        role="presentation"
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                      >
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • A personalized walkthrough of {{ project_name }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • Live demonstration of AI-powered financial
+                            insights
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • Q&A session tailored to your business needs
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              padding: 6px 0;
+                              color: #666666;
+                              font-size: 15px;
+                              line-height: 22px;
+                            "
+                          >
+                            • Discussion of integration with your existing
+                            systems
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Help Section -->
+                <table
+                  role="presentation"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="margin-top: 24px"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      style="
+                        padding: 20px;
+                        background-color: #f9f9f9;
+                        border-radius: 8px;
+                      "
+                    >
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          color: #666666;
+                          line-height: 20px;
+                        "
+                      >
+                        Have questions in the meantime? Feel free to reply to
+                        this email.<br />We're here to help!
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Signature -->
+                <p style="margin: 32px 0 0 0; color: #666666">
+                  Looking forward to connecting soon,<br /><strong
+                    style="color: #333333"
+                    >The {{ project_name }} Team</strong
+                  >
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                align="center"
+                style="
+                  padding: 20px;
+                  background-color: #f0f0f0;
+                  color: #888888;
+                  font-size: 12px;
+                  line-height: 18px;
+                  font-family: Arial, Helvetica, sans-serif;
+                  border-radius: 0 0 8px 8px;
+                "
+              >
+                <p style="margin: 0">
+                  &copy; {{ current_year }} {{ project_name }}. All rights
+                  reserved.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

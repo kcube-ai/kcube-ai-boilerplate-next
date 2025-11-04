@@ -1,0 +1,76 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist
+build
+*.egg
+venv/
+env/
+.venv/
+ENV/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+frontend/.vercel/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.cover
+
+# Environment
+.env
+*.env.local
+*.env.*.local
+
+# Documentation
+*.md
+!README.md
+
+# Logs
+*.log
+logs/
+
+# Alembic
+alembic/versions/__pycache__
+
+# Legacy/Unused
+data-engineering/
+web-app/
+testing/
+
+# Other
+.claude/
+*.bak
+*.tmp
+.cache/

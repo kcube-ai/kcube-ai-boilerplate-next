@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Inter font */
+@import url("https://rsms.me/inter/inter.css");
+
+@layer base {
+  :root {
+    /* Light mode colors */
+    --background: 0 0% 100%; /* white */
+    --foreground: 0 0% 0%; /* black */
+
+    --card: 0 0% 100%; /* white */
+    --card-foreground: 0 0% 0%; /* black */
+
+    --popover: 0 0% 100%; /* white */
+    --popover-foreground: 0 0% 0%; /* black */
+
+    --primary: 201 100% 50%; /* #059FFF sample-blue */
+    --primary-foreground: 0 0% 100%; /* white */
+
+    --secondary: 0 0% 96%; /* #F4F4F4 sample-gray-100 */
+    --secondary-foreground: 216 6% 39%; /* #5F6368 sample-gray-300 */
+
+    --muted: 0 0% 96%; /* #F4F4F4 */
+    --muted-foreground: 216 6% 39%; /* #5F6368 */
+
+    --accent: 0 0% 93%; /* #ECECEC sample-gray-200 */
+    --accent-foreground: 0 0% 0%; /* black */
+
+    --destructive: 0 84% 60%; /* #ef4444 */
+    --destructive-foreground: 0 0% 100%; /* white */
+
+    --border: 0 0% 0% / 0.1; /* rgba(0,0,0,0.1) */
+    --input: 0 0% 0% / 0.1; /* rgba(0,0,0,0.1) */
+    --ring: 201 100% 50%; /* #059FFF */
+  }
+
+  .dark {
+    /* Dark mode colors */
+    --background: 0 0% 7%; /* #121212 dark gray */
+    --foreground: 0 0% 95%; /* #F2F2F2 light gray */
+
+    --card: 0 0% 11%; /* #1C1C1C slightly lighter than bg */
+    --card-foreground: 0 0% 95%; /* #F2F2F2 */
+
+    --popover: 0 0% 11%; /* #1C1C1C */
+    --popover-foreground: 0 0% 95%; /* #F2F2F2 */
+
+    --primary: 201 100% 50%; /* #059FFF sample-blue stays same */
+    --primary-foreground: 0 0% 100%; /* white */
+
+    --secondary: 0 0% 15%; /* #262626 dark gray */
+    --secondary-foreground: 0 0% 75%; /* #BFBFBF light gray */
+
+    --muted: 0 0% 15%; /* #262626 */
+    --muted-foreground: 0 0% 60%; /* #999999 */
+
+    --accent: 0 0% 20%; /* #333333 */
+    --accent-foreground: 0 0% 95%; /* #F2F2F2 */
+
+    --destructive: 0 84% 60%; /* #ef4444 stays same */
+    --destructive-foreground: 0 0% 100%; /* white */
+
+    --border: 0 0% 100% / 0.1; /* rgba(255,255,255,0.1) */
+    --input: 0 0% 100% / 0.1; /* rgba(255,255,255,0.1) */
+    --ring: 201 100% 50%; /* #059FFF */
+  }
+}
+
+@layer utilities {
+  /* Text gradient for hero sections - works in both light and dark mode */
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(201 100% 40%) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Browser-specific fixes that Tailwind can't handle */
+input::-ms-reveal {
+  display: none;
+}
+
+/* Auto-fill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
+
+/* CSS-only interactions that are complex to do in Tailwind */
+.file-drop-zone.drag-active {
+  transform: scale(1.02);
+  border-color: #059fff;
+  background-color: #f0f9ff;
+}
+
+/* Typing animation for chat */
+@keyframes typing-dots {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.typing-indicator span:nth-child(1) {
+  animation: typing-dots 1.5s infinite;
+  animation-delay: 0s;
+}
+.typing-indicator span:nth-child(2) {
+  animation: typing-dots 1.5s infinite;
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation: typing-dots 1.5s infinite;
+  animation-delay: 0.4s;
+}
+
+/* Print media queries */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .border {
+    border-color: ButtonText !important;
+  }
+  .bg-primary {
+    background-color: ButtonFace !important;
+    color: ButtonText !important;
+  }
+}
