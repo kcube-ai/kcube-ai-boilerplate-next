@@ -8,7 +8,6 @@ import { IntegrationSection } from "@/components/landing/integration-section";
 import { Navigation } from "@/components/landing/navigation";
 import { PrivacySection } from "@/components/landing/privacy-section";
 import { SecuritySection } from "@/components/landing/security-section";
-import { VideoSection } from "@/components/landing/video-section";
 
 export const metadata: Metadata = {
   title: "Sample AI - Full-Stack SaaS Application Template",
@@ -30,7 +29,6 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <FeatureCards />
-        <VideoSection />
         <IntegrationSection />
         <PrivacySection />
         <SecuritySection />
