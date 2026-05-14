@@ -115,7 +115,7 @@ docker run -d -p 8000:8000 \
   -e POSTGRES_SERVER=db \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_USER=postgres \
-  -e POSTGRES_DB=medial_db \
+  -e POSTGRES_DB=sample_db \
   -e REDIS_URL=redis://redis:6379/0 \
   sample-ai:latest
 
@@ -679,7 +679,7 @@ SENDGRID_FROM_EMAIL=noreply@example.com
 SENDGRID_VERIFY_SSL=true
 
 # PostgreSQL
-POSTGRES_DB=medial_db
+POSTGRES_DB=sample_db
 POSTGRES_USER=postgres
 POSTGRES_PORT=5432
 POSTGRES_SERVER=localhost
@@ -870,7 +870,7 @@ docker run -d -p 8000:8000 \
   -e POSTGRES_SERVER=db \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_USER=postgres \
-  -e POSTGRES_DB=medial_db \
+  -e POSTGRES_DB=sample_db \
   -e REDIS_URL=redis://redis:6379/0 \
   sample-ai:latest
 ```

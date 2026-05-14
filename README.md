@@ -152,7 +152,7 @@ Copy `.env.example` to `.env` and configure:
 # Essential variables
 APP_NAME=Sample AI
 JWT_SECRET_KEY=your-secret-key
-POSTGRES_DB=medial_db
+POSTGRES_DB=sample_db
 POSTGRES_PASSWORD=your-password
 REDIS_URL=redis://localhost:6379/0
 SENDGRID_API_KEY=your-api-key
